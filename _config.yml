@@ -26,3 +26,5 @@ author:
 #plugins:
 #  - jekyll-archives
 gems: [jekyll-paginate]  
+
+theme: jekyll-theme-cayman
