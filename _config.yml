@@ -1,5 +1,4 @@
 # Permalinks
-#
 # Use of `relative_permalinks` ensures post links from the index work properly.
 permalink:           pretty
 #relative_permalinks: true
@@ -7,24 +6,20 @@ permalink:           pretty
 # Setup
 title:               Lynn's Blog
 tagline:             'Security Project'
-#description:         'A reserved <a href="http://jekyllrb.com" target="_blank">Jekyll</a> theme that places the utmost gravity on content with a hidden drawer. Made by <a href="https://twitter.com/mdo" target="_blank">@mdo</a>.'
-description:         'A blog that records things I learn from information security'
+description:         'Lynn Wu'
 url:                 http://0x00.tw
 baseurl:             ''
-paginate:            2
+paginate:            5
 paginate_path:       "blog/page:num"
 
 # About/contact
 author:
-  name:              Lynn Wu
-  url:               https://twitter.com/0x000050
-  email:             0x000050@gmail.com
-  github:            https://github.com/0x000050
+  name:              'Lynn Wu'
+  email:             '0x000050[at]gmail[dot]com'
+  twitter:           0x000050
+  github:            0x000050
+   
+# Jekyll v3.0 for paginate
+gems: [jekyll-paginate] 
 
-# Custom vars
-#version:             1.0.0
-#plugins:
-#  - jekyll-archives
-gems: [jekyll-paginate]  
 
-theme: jekyll-theme-minimal
