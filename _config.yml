@@ -15,7 +15,7 @@ paginate_path:       "blog/page:num"
 # About/contact
 author:
   name:              'Lynn Wu'
-  email:             '0x000050[at]gmail[dot]com'
+  email:             '0x000050@gmail.com'
   twitter:           0x000050
   github:            0x000050
    
