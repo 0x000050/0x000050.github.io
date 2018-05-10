@@ -29,6 +29,10 @@
   <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
 </head>
 
+<!-- font awesome -->
+<!-- <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">-->
+<script defer src="https://use.fontawesome.com/releases/v5.0.10/js/all.js" integrity="sha384-slN8GvtUJGnv6ca26v8EzVaR9DC58QEwsIk9q1QXdCU8Yu8ck/tL/5szYlBbqmS+" crossorigin="anonymous"></script>
+
 
   <body>
 
@@ -39,7 +43,13 @@
 <!-- Toggleable sidebar -->
 <div class="sidebar" id="sidebar">
   <div class="sidebar-item">
-    <p>A blog that records things I learn from information security</p>
+    <p>Lynn Wu</p>
+    <p class="social-icons">
+       <a href="https://github.com/0x000050"><i class="fab fa-github fa-2x"></i></a>&emsp;
+       <a href="https://twitter.com/0x000050"><i class="fab fa-twitter fa-2x"></i></a>&emsp;
+       <a href="mailto:0x000050[at]gmail[dot]com"><i class="fa fa-envelope fa-2x"></i></a>&emsp;
+	   <a href="/atom.xml"><i class="fa fa-rss fa-2x"></i></a>
+       </p>
   </div>
 
   <nav class="sidebar-nav">
@@ -85,8 +95,10 @@
 
   <div class="sidebar-item">
     <p>
-      &copy; 2018. All rights reserved.
-    </p>
+      <small>&copy; 2018 <a href="mailto:0x000050[at]gmail[dot]com">Lynn</i></a>. All rights reserved.</small>
+<small>Powered by <a href="https://jekyllrb.com">Jekyll</i></a>, theme 
+<a href= "https://github.com/poole/lanyon">Lanyon.</i></a></small>
+	</p>
   </div>
 </div>
 
@@ -106,44 +118,46 @@
       <div class="container content">
         <div class="page">
   <h1 class="page-title">Tags</h1>
-  <div class="tags-expo">
-  <div class="tags-expo-list">
-    
-    <a href="#test" class="post-tag">test</a>
-    
-    <a href="#test2" class="post-tag">test2</a>
-    
-  </div>
-  <hr />
-  <div class="tags-expo-section">
-    
-    <h2 id="test">test</h2>
-    <ul class="tags-expo-posts">
-      
-        <a class="post-title" href="/2018/02/02/Test-Post/">
-      <li>
-        Test Post1
-      <small class="post-date">02 Feb 2018</small>
-      </li>
-      </a>
-      
-    </ul>
-    
-    <h2 id="test2">test2</h2>
-    <ul class="tags-expo-posts">
-      
-        <a class="post-title" href="/2018/02/02/Test-Post/">
-      <li>
-        Test Post1
-      <small class="post-date">02 Feb 2018</small>
-      </li>
-      </a>
-      
-    </ul>
-    
-  </div>
-</div>
+  
+<!-- site_tags: test,test2 -->
 
+<!-- tag_words: testtest2 -->
+
+<div>
+  <ul class="tag-box inline">
+  
+    
+    <span style="white-space: pre"><a href="#test"><i class="fa fa-tag fa-rotate-90 fa-sm"></i>&nbsp;test&nbsp;(<span>1</span></span>)</a>&ensp;
+    
+    
+    <span style="white-space: pre"><a href="#test2"><i class="fa fa-tag fa-rotate-90 fa-sm"></i>&nbsp;test2&nbsp;(<span>1</span></span>)</a>&ensp;
+    
+  </ul>
+
+  <hr></hr>
+
+  
+    
+    <h5 id="test">test</h5>
+    <ul class="posts">
+    
+      
+        <li itemscope style="list-style-type:none">02 Feb 2018 &nbsp;&nbsp;&raquo;&nbsp;&nbsp; <a href="/2018/02/02/Test-Post/">Test Post1</a></li>
+      
+    
+    </ul>
+  
+    
+    <h5 id="test2">test2</h5>
+    <ul class="posts">
+    
+      
+        <li itemscope style="list-style-type:none">02 Feb 2018 &nbsp;&nbsp;&raquo;&nbsp;&nbsp; <a href="/2018/02/02/Test-Post/">Test Post1</a></li>
+      
+    
+    </ul>
+  
+</div>
 
 </div>
 
@@ -169,5 +183,17 @@
         }, false);
       })(document);
     </script>
+	
+<!--Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-118957659-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-118957659-1');
+</script>
+
+
   </body>
 </html>

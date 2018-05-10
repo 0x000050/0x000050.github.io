@@ -29,6 +29,10 @@
   <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
 </head>
 
+<!-- font awesome -->
+<!-- <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">-->
+<script defer src="https://use.fontawesome.com/releases/v5.0.10/js/all.js" integrity="sha384-slN8GvtUJGnv6ca26v8EzVaR9DC58QEwsIk9q1QXdCU8Yu8ck/tL/5szYlBbqmS+" crossorigin="anonymous"></script>
+
 
   <body>
 
@@ -39,7 +43,13 @@
 <!-- Toggleable sidebar -->
 <div class="sidebar" id="sidebar">
   <div class="sidebar-item">
-    <p>A blog that records things I learn from information security</p>
+    <p>Lynn Wu</p>
+    <p class="social-icons">
+       <a href="https://github.com/0x000050"><i class="fab fa-github fa-2x"></i></a>&emsp;
+       <a href="https://twitter.com/0x000050"><i class="fab fa-twitter fa-2x"></i></a>&emsp;
+       <a href="mailto:0x000050[at]gmail[dot]com"><i class="fa fa-envelope fa-2x"></i></a>&emsp;
+	   <a href="/atom.xml"><i class="fa fa-rss fa-2x"></i></a>
+       </p>
   </div>
 
   <nav class="sidebar-nav">
@@ -85,8 +95,10 @@
 
   <div class="sidebar-item">
     <p>
-      &copy; 2018. All rights reserved.
-    </p>
+      <small>&copy; 2018 <a href="mailto:0x000050[at]gmail[dot]com">Lynn</i></a>. All rights reserved.</small>
+<small>Powered by <a href="https://jekyllrb.com">Jekyll</i></a>, theme 
+<a href= "https://github.com/poole/lanyon">Lanyon.</i></a></small>
+	</p>
   </div>
 </div>
 
@@ -136,5 +148,17 @@
         }, false);
       })(document);
     </script>
+	
+<!--Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-118957659-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-118957659-1');
+</script>
+
+
   </body>
 </html>
