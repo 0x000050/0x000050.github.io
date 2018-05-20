@@ -4,7 +4,7 @@
  <title>Lynn's Blog</title>
  <link href="http://0.0.0.0:4000/atom.xml" rel="self"/>
  <link href="http://0.0.0.0:4000/"/>
- <updated>2018-05-21T00:44:55+08:00</updated>
+ <updated>2018-05-21T00:58:02+08:00</updated>
  <id>http://0.0.0.0:4000</id>
  <author>
    <name>Lynn Wu</name>
@@ -17,15 +17,7 @@
    <link href="http://0.0.0.0:4000/2018/05/20/2017-Flare-On-2-IgniteMe/"/>
    <updated>2018-05-20T00:00:00+08:00</updated>
    <id>http://0.0.0.0:4000/2018/05/20/2017 Flare-On #2 IgniteMe</id>
-   <content type="html">&lt;blockquote&gt;
-  &lt;p&gt;Challenge #2 by Nhan Huynh&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/0x000050/CTF/blob/master/2017_Flare-On/02_IgniteMe/IgniteMe.exe&quot;&gt;Challenge download&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;This is a crack me challenge. IgniteMe.exe expects to run without any command line argument. It asks the player to input the	 flag and checks whether it’s correct or not.&lt;/p&gt;
+   <content type="html">&lt;p&gt;This is a crack me challenge. &lt;code class=&quot;highlighter-rouge&quot;&gt;IgniteMe.exe&lt;/code&gt; expects to run without any command line argument. It asks the player to input the flag and checks whether it’s correct or not.&lt;/p&gt;
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;C:\Users\nnyl\Desktop\flareon4\Challenge2&amp;gt;IgniteMe.exe
 G1v3 m3 t3h fl4g:  flareon
@@ -84,6 +76,12 @@ N0t t00 h0t R we? 7ry 4ga1nz plzzz!
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Flag: &lt;code class=&quot;highlighter-rouge&quot;&gt;R_y0u_H0t_3n0ugH_t0_1gn1t3@flare-on.com&lt;/code&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;ul&gt;
+  &lt;li&gt;Challenge #2 by Nhan Huynh&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/0x000050/CTF/blob/master/2017_Flare-On/02_IgniteMe/IgniteMe.exe&quot;&gt;Challenge download&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
 </content>
  </entry>
  
@@ -101,13 +99,6 @@ N0t t00 h0t R we? 7ry 4ga1nz plzzz!
 
 &lt;hr /&gt;
 &lt;p&gt;login.html&lt;/p&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;Challenge #1 by Dominik Weber (@Invalid_handle)&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/0x000050/CTF/blob/master/2017_Flare-On/01_Login/login.html&quot;&gt;Challenge download&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
 
 &lt;p&gt;There is an HTML file with a form. We need to provide a flag and check for its correctness.&lt;/p&gt;
 
@@ -144,6 +135,12 @@ N0t t00 h0t R we? 7ry 4ga1nz plzzz!
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;If we enter &lt;code class=&quot;highlighter-rouge&quot;&gt;PyvragFvqrYbtvafNerRnfl@syner-ba.pbz&lt;/code&gt; as the input, the message box shows us the flag for this challenge: &lt;code class=&quot;highlighter-rouge&quot;&gt;ClientSideLoginsAreEasy@flare-on.com&lt;/code&gt;.&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;ul&gt;
+  &lt;li&gt;Challenge #1 by Dominik Weber (@Invalid_handle)&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/0x000050/CTF/blob/master/2017_Flare-On/01_Login/login.html&quot;&gt;Challenge download&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
 </content>
  </entry>
  

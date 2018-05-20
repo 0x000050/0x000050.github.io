@@ -3,11 +3,7 @@ layout: post
 title: 2017 Flare-On Challenge 2 IgniteMe.exe
 tags: [Flare_On, Reverse]
 ---
->Challenge #2 by Nhan Huynh
-
-* [Challenge download](https://github.com/0x000050/CTF/blob/master/2017_Flare-On/02_IgniteMe/IgniteMe.exe)
-
-This is a crack me challenge. IgniteMe.exe expects to run without any command line argument. It asks the player to input the	 flag and checks whether it's correct or not.
+This is a crack me challenge. `IgniteMe.exe` expects to run without any command line argument. It asks the player to input the flag and checks whether it's correct or not.
 
 ```
 C:\Users\nnyl\Desktop\flareon4\Challenge2>IgniteMe.exe
@@ -65,3 +61,8 @@ print ans[::-1]
 ```
 
 Flag: `R_y0u_H0t_3n0ugH_t0_1gn1t3@flare-on.com`
+
+
+- - -
+* Challenge #2 by Nhan Huynh
+* [Challenge download](https://github.com/0x000050/CTF/blob/master/2017_Flare-On/02_IgniteMe/IgniteMe.exe)
