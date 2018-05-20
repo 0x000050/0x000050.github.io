@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 2017 Flare-On Challenge 2 IgniteMe.exe
-tags: [Flare_On, Reverse]
+tags: [Flare-On, Reverse]
 ---
 This is a crack me challenge. `IgniteMe.exe` expects to run without any command line argument. It asks the player to input the flag and checks whether it's correct or not.
 
