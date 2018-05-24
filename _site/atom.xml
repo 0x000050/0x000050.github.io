@@ -4,13 +4,98 @@
  <title>Lynn's Blog</title>
  <link href="http://0.0.0.0:4000/atom.xml" rel="self"/>
  <link href="http://0.0.0.0:4000/"/>
- <updated>2018-05-21T01:00:52+08:00</updated>
+ <updated>2018-05-24T13:00:30+08:00</updated>
  <id>http://0.0.0.0:4000</id>
  <author>
    <name>Lynn Wu</name>
    <email>0x000050@gmail.com</email>
  </author>
 
+ 
+ <entry>
+   <title>2017 Flare-On Challenge 3 Greektome.exe</title>
+   <link href="http://0.0.0.0:4000/2018/05/22/2017-Flare-On-3-Greektome/"/>
+   <updated>2018-05-22T00:00:00+08:00</updated>
+   <id>http://0.0.0.0:4000/2018/05/22/2017 Flare-On #3 Greektome</id>
+   <content type="html">&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Greek_to_me.exe&lt;/code&gt; is a Windows x86 executable. When we launch the binary, we can’t input anything, and we don’t get any output from the binary. It gets stuck waiting for us to do something.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Analysis:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;When we open it in IDA, we can see it contains the &lt;code class=&quot;highlighter-rouge&quot;&gt;socket&lt;/code&gt; function at &lt;code class=&quot;highlighter-rouge&quot;&gt;0x401151&lt;/code&gt;, the binary using a standard series of Windows API functions: &lt;code class=&quot;highlighter-rouge&quot;&gt;socket&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;bind&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;listen&lt;/code&gt;, and &lt;code class=&quot;highlighter-rouge&quot;&gt;accept&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;So far we know the binary listening for a TCP connection from localhost on port 2222 (0x8AE). It then proceeds to read up to 8-bit register in &lt;code class=&quot;highlighter-rouge&quot;&gt;sub_401121&lt;/code&gt;, and the input is a 32-bit integer.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://i.imgur.com/szZCmXr.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Additionally, there has some interesting string of the program at virtual address &lt;code class=&quot;highlighter-rouge&quot;&gt;0x401101&lt;/code&gt;, that is &lt;code class=&quot;highlighter-rouge&quot;&gt;Congratulations! But wait, where',27h,'s my flag?&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://i.imgur.com/fSeXBij.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;At &lt;code class=&quot;highlighter-rouge&quot;&gt;0x401036&lt;/code&gt;, the first byte from the recv buffer is moved into the lower eight bits of the EDX register. Then, focus on &lt;code class=&quot;highlighter-rouge&quot;&gt;loc_40107C&lt;/code&gt; function and &lt;code class=&quot;highlighter-rouge&quot;&gt;loc_401039&lt;/code&gt; function, the address &lt;code class=&quot;highlighter-rouge&quot;&gt;0x40107C&lt;/code&gt; is moved into the &lt;code class=&quot;highlighter-rouge&quot;&gt;EAX&lt;/code&gt; register, representing the start address for the decoding loop.&lt;/p&gt;
+
+&lt;p&gt;The decoding loop contains some operations. First of all, take a one byte at the address stored in &lt;code class=&quot;highlighter-rouge&quot;&gt;EAX&lt;/code&gt; (&lt;code class=&quot;highlighter-rouge&quot;&gt;0x40107C&lt;/code&gt;). Next, XOR the extracted byte with the first byte received over the listening socket, then incremented by 34 (0x22). Use the resulting byte to overwrite the byte extracted in &lt;code class=&quot;highlighter-rouge&quot;&gt;EAX&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://i.imgur.com/tx8jK96.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Further, &lt;code class=&quot;highlighter-rouge&quot;&gt;sub_4011E6&lt;/code&gt; function is used to hash, arguments are the start address of the modified code (&lt;code class=&quot;highlighter-rouge&quot;&gt;0x40107C&lt;/code&gt;) and the length value 121 (0x79). In &lt;code class=&quot;highlighter-rouge&quot;&gt;sub_4011E6&lt;/code&gt; function, a 16 bits (&lt;code class=&quot;highlighter-rouge&quot;&gt;AX&lt;/code&gt;) hash data is calculated and checked against 64350 (0xFB5E) for equality. If the hash data matches, the code is executed, without getting an error message &lt;code class=&quot;highlighter-rouge&quot;&gt;Nope, that’s not it&lt;/code&gt;.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Solutions:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The key is only a single byte, but there are 256 possibilities. Following python code to help us get &lt;code class=&quot;highlighter-rouge&quot;&gt;0xA2&lt;/code&gt; (&lt;code class=&quot;highlighter-rouge&quot;&gt;ó&lt;/code&gt;) as the key:&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;os&lt;/span&gt; 
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;socket&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;string&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;time&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;#scoket info&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;HOST&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'127.0.0.1'&lt;/span&gt;    
+&lt;span class=&quot;n&quot;&gt;PORT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2222&lt;/span&gt;              
+
+&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;256&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+	&lt;span class=&quot;c&quot;&gt;#open exe&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;filepath&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'greek_to_me.exe'&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;startfile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;filepath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.1&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+	&lt;span class=&quot;c&quot;&gt;#connect socket&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;AF_INET&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SOCK_STREAM&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;connect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;HOST&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;PORT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sendall&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;chr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;recv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1024&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Congratulations! But wait, where's my flag?&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;chr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'Received'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;repr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Put a breakpoints at &lt;code class=&quot;highlighter-rouge&quot;&gt;0x401063&lt;/code&gt; with IDA, we can find the flag that got written to the stack was &lt;code class=&quot;highlighter-rouge&quot;&gt;et_tu_brute_force@flare-on.com&lt;/code&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Notes:
+    &lt;ul&gt;
+      &lt;li&gt;Compared with &lt;code class=&quot;highlighter-rouge&quot;&gt;127.0.0.1&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;0.0.0.0&lt;/code&gt;:
+        &lt;ul&gt;
+          &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;127.0.0.1&lt;/code&gt; is only for local interface, when a server listen &lt;code class=&quot;highlighter-rouge&quot;&gt;127.0.0.1&lt;/code&gt; that means “only communicate within the same host”.&lt;/li&gt;
+          &lt;li&gt;when a server listen on &lt;code class=&quot;highlighter-rouge&quot;&gt;0.0.0.0&lt;/code&gt; that means “listen on every available network interface”.&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+&lt;ul&gt;
+  &lt;li&gt;Challenge Author: Matt Williams (@0xmwilliams)&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/0x000050/CTF/blob/master/2017_Flare-On/03_Greek_to_me/greek_to_me.exe&quot;&gt;Challenge download&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+ </entry>
  
  <entry>
    <title>2017 Flare-On Challenge 2 IgniteMe.exe</title>
