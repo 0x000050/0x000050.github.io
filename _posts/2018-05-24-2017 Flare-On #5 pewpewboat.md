@@ -100,22 +100,22 @@ O
 ```
 Reaching the final level, we got those message
 ```
-You sunk all the ships!!                                                                                                                                                                                          │
-   1 2 3 4 5 6 7 8                                                                                                                                                                                                │
-A |_|_|_|_|_|_|_|_|                                                                                                                                                                                               │
-B |_|_|_|_|_|_|_|_|                                                                                                                                                                                               │
-C |_|_|_|_|_|_|_|_|                                                                                                                                                                                               │
-D |_|_|_|_|_|_|_|_|                                                                                                                                                                                               │
-E |_|_|_|_|_|_|_|_|                                                                                                                                                                                               │
-F |_|_|_|_|_|_|_|_|                                                                                                                                                                                               │
-G |_|_|_|_|_|_|_|_|                                                                                                                                                                                               │
-H |_|_|_|_|_|_|_|_|                                                                                                                                                                                               │
-                                                                                                                                                                                                                  │
-Rank: Congratulation!                                                                                                                                                                                             │
-                                                                                                                                                                                                                  │
+You sunk all the ships!!
+   1 2 3 4 5 6 7 8
+A |_|_|_|_|_|_|_|_|
+B |_|_|_|_|_|_|_|_|
+C |_|_|_|_|_|_|_|_|
+D |_|_|_|_|_|_|_|_|
+E |_|_|_|_|_|_|_|_|
+F |_|_|_|_|_|_|_|_|
+G |_|_|_|_|_|_|_|_|
+H |_|_|_|_|_|_|_|_|
+                   
+Rank: Congratulation!
+                     
 Aye!PEWYouPEWfoundPEWsomePEWlettersPEWdidPEWya?PEWToPEWfindPEWwhatPEWyou'rePEWlookingPEWfor,PEWyou'llPEWwantPEWtoPEWre-orderPEWthem:PEW9,PEW1,PEW2,PEW7,PEW3,PEW5,PEW6,PEW5,PEW8,PEW0,PEW2,PEW3,PEW5,PEW6,PEW1,PEW4.
-PEWNextPEWyouPEWletPEW13PEWROTPEWinPEWthePEWsea!PEWTHEPEWFINALPEWSECRETPEWCANPEWBEPEWFOUNDPEWWITHPEWONLYPEWTHEPEWUPPERPEWCASE.                                                                                  │
-Thanks for playing!                        
+PEWNextPEWyouPEWletPEW13PEWROTPEWinPEWthePEWsea!PEWTHEPEWFINALPEWSECRETPEWCANPEWBEPEWFOUNDPEWWITHPEWONLYPEWTHEPEWUPPERPEWCASE.
+Thanks for playing!  
 ```
 
 After we delete "PEW" words, we can get real messages.

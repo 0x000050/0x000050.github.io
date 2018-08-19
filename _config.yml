@@ -1,6 +1,6 @@
 # Permalinks
 # Use of `relative_permalinks` ensures post links from the index work properly.
-permalink:           pretty
+# permalink:           pretty   disable for paginate
 #relative_permalinks: true
 
 # Setup
@@ -9,7 +9,7 @@ tagline:             'Security Project'
 description:         'Lynn Wu'
 url:                 http://0x00.tw
 baseurl:             ''
-paginate:            5
+paginate:            15
 paginate_path:       "blog/page:num"
 
 # About/contact

@@ -4,7 +4,7 @@
  <title>Lynn's Blog</title>
  <link href="http://0.0.0.0:4000/atom.xml" rel="self"/>
  <link href="http://0.0.0.0:4000/"/>
- <updated>2018-08-19T12:08:26+08:00</updated>
+ <updated>2018-08-20T04:18:31+08:00</updated>
  <id>http://0.0.0.0:4000</id>
  <author>
    <name>Lynn Wu</name>
@@ -14,7 +14,7 @@
  
  <entry>
    <title>2017 Flare-On Challenge 5 pewpewboat.exe</title>
-   <link href="http://0.0.0.0:4000/2018/05/24/2017-Flare-On-5-pewpewboat/"/>
+   <link href="http://0.0.0.0:4000/2018/05/24/2017-Flare-On-5-pewpewboat.html"/>
    <updated>2018-05-24T00:00:00+08:00</updated>
    <id>http://0.0.0.0:4000/2018/05/24/2017 Flare-On #5 pewpewboat</id>
    <content type="html">&lt;p&gt;Actually, &lt;code class=&quot;highlighter-rouge&quot;&gt;pewpewboat.exe&lt;/code&gt; is not a Windows	PE file but an x64 ELF binary. When we launch the binary in linux, we can see that is a the Battleship game.&lt;/p&gt;
@@ -112,22 +112,22 @@ V
 O
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;p&gt;Reaching the final level, we got those message&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;You sunk all the ships!!                                                                                                                                                                                          │
-   1 2 3 4 5 6 7 8                                                                                                                                                                                                │
-A |_|_|_|_|_|_|_|_|                                                                                                                                                                                               │
-B |_|_|_|_|_|_|_|_|                                                                                                                                                                                               │
-C |_|_|_|_|_|_|_|_|                                                                                                                                                                                               │
-D |_|_|_|_|_|_|_|_|                                                                                                                                                                                               │
-E |_|_|_|_|_|_|_|_|                                                                                                                                                                                               │
-F |_|_|_|_|_|_|_|_|                                                                                                                                                                                               │
-G |_|_|_|_|_|_|_|_|                                                                                                                                                                                               │
-H |_|_|_|_|_|_|_|_|                                                                                                                                                                                               │
-                                                                                                                                                                                                                  │
-Rank: Congratulation!                                                                                                                                                                                             │
-                                                                                                                                                                                                                  │
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;You sunk all the ships!!
+   1 2 3 4 5 6 7 8
+A |_|_|_|_|_|_|_|_|
+B |_|_|_|_|_|_|_|_|
+C |_|_|_|_|_|_|_|_|
+D |_|_|_|_|_|_|_|_|
+E |_|_|_|_|_|_|_|_|
+F |_|_|_|_|_|_|_|_|
+G |_|_|_|_|_|_|_|_|
+H |_|_|_|_|_|_|_|_|
+                   
+Rank: Congratulation!
+                     
 Aye!PEWYouPEWfoundPEWsomePEWlettersPEWdidPEWya?PEWToPEWfindPEWwhatPEWyou'rePEWlookingPEWfor,PEWyou'llPEWwantPEWtoPEWre-orderPEWthem:PEW9,PEW1,PEW2,PEW7,PEW3,PEW5,PEW6,PEW5,PEW8,PEW0,PEW2,PEW3,PEW5,PEW6,PEW1,PEW4.
-PEWNextPEWyouPEWletPEW13PEWROTPEWinPEWthePEWsea!PEWTHEPEWFINALPEWSECRETPEWCANPEWBEPEWFOUNDPEWWITHPEWONLYPEWTHEPEWUPPERPEWCASE.                                                                                  │
-Thanks for playing!                        
+PEWNextPEWyouPEWletPEW13PEWROTPEWinPEWthePEWsea!PEWTHEPEWFINALPEWSECRETPEWCANPEWBEPEWFOUNDPEWWITHPEWONLYPEWTHEPEWUPPERPEWCASE.
+Thanks for playing!  
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;After we delete “PEW” words, we can get real messages.&lt;/p&gt;
@@ -175,7 +175,7 @@ Enter a coordinate: BUTWHEREISTHERUM
  
  <entry>
    <title>2017 Flare-On Challenge 4 Notepad.exe</title>
-   <link href="http://0.0.0.0:4000/2018/05/23/2017-Flare-On-4-notepad/"/>
+   <link href="http://0.0.0.0:4000/2018/05/23/2017-Flare-On-4-notepad.html"/>
    <updated>2018-05-23T00:00:00+08:00</updated>
    <id>http://0.0.0.0:4000/2018/05/23/2017 Flare-On #4 notepad</id>
    <content type="html">&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Notepad.exe&lt;/code&gt; is a Windows x86 executable, it seems to be a modified version of Microsoft’s &lt;code class=&quot;highlighter-rouge&quot;&gt;Notepad.exe&lt;/code&gt;. Let’s launch this binary and it looks nothing special.&lt;/p&gt;
@@ -330,7 +330,7 @@ what's wrong with my key file?
  
  <entry>
    <title>2017 Flare-On Challenge 3 Greektome.exe</title>
-   <link href="http://0.0.0.0:4000/2018/05/22/2017-Flare-On-3-Greektome/"/>
+   <link href="http://0.0.0.0:4000/2018/05/22/2017-Flare-On-3-Greektome.html"/>
    <updated>2018-05-22T00:00:00+08:00</updated>
    <id>http://0.0.0.0:4000/2018/05/22/2017 Flare-On #3 Greektome</id>
    <content type="html">&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Greek_to_me.exe&lt;/code&gt; is a Windows x86 executable. When we launch the binary, we can’t input anything, and we don’t get any output from the binary. It gets stuck waiting for us to do something.&lt;/p&gt;
@@ -415,7 +415,7 @@ what's wrong with my key file?
  
  <entry>
    <title>2017 Flare-On Challenge 2 IgniteMe.exe</title>
-   <link href="http://0.0.0.0:4000/2018/05/20/2017-Flare-On-2-IgniteMe/"/>
+   <link href="http://0.0.0.0:4000/2018/05/20/2017-Flare-On-2-IgniteMe.html"/>
    <updated>2018-05-20T00:00:00+08:00</updated>
    <id>http://0.0.0.0:4000/2018/05/20/2017 Flare-On #2 IgniteMe</id>
    <content type="html">&lt;p&gt;This is a crack me challenge. &lt;code class=&quot;highlighter-rouge&quot;&gt;IgniteMe.exe&lt;/code&gt; expects to run without any command line argument. It asks the player to input the flag and checks whether it’s correct or not.&lt;/p&gt;
@@ -488,7 +488,7 @@ N0t t00 h0t R we? 7ry 4ga1nz plzzz!
  
  <entry>
    <title>2017 Flare-On Challenge 1 login.html</title>
-   <link href="http://0.0.0.0:4000/2018/05/10/2017-Flare-On-1-Login/"/>
+   <link href="http://0.0.0.0:4000/2018/05/10/2017-Flare-On-1-Login.html"/>
    <updated>2018-05-10T00:00:00+08:00</updated>
    <id>http://0.0.0.0:4000/2018/05/10/2017 Flare-On #1 Login</id>
    <content type="html">&lt;p&gt;&lt;a href=&quot;http://flare-on.com&quot;&gt;Flare-On Challenge&lt;/a&gt; is the FireEye Labs Advanced Reverse Engineering (FLARE) team’s yearly reverse engineering contest. This is a CTF-style challenge for all active and aspiring reverse engineers, malware analysts, and security professionals.&lt;/p&gt;
@@ -547,7 +547,7 @@ N0t t00 h0t R we? 7ry 4ga1nz plzzz!
  
  <entry>
    <title>Windows Kernel Exploit - Stack Overflow</title>
-   <link href="http://0.0.0.0:4000/2018/01/10/Windows-Kernel-Exploit-Stack-Overflow/"/>
+   <link href="http://0.0.0.0:4000/2018/01/10/Windows-Kernel-Exploit-Stack-Overflow.html"/>
    <updated>2018-01-10T00:00:00+08:00</updated>
    <id>http://0.0.0.0:4000/2018/01/10/Windows Kernel Exploit - Stack Overflow</id>
    <content type="html">&lt;p&gt;本篇以 HEVD 為案例進行實作，HEVD 是由 HackSysTeam 所開發的 Kernel Driver，該專案中包含了許多常見的漏洞，適合想練習 Windows Kernel Exploit 的研究人員練習，藉以用來練習各種漏洞利用方法。本篇以 Windows 7 為範例，本次測試的 Windows 7 沒有 SMEP 與 SMAP 防護機制，相對較簡單，有機會也會在其他版本的 Windows 上練習。&lt;/p&gt;
@@ -857,7 +857,7 @@ DWORD WINAPI StackOverflowThread(LPVOID Parameter) {
  
  <entry>
    <title>2017 HITCON CMT mini wargame Reverse</title>
-   <link href="http://0.0.0.0:4000/2017/08/26/2017-HITCON-CMT-mini-wargame/"/>
+   <link href="http://0.0.0.0:4000/2017/08/26/2017-HITCON-CMT-mini-wargame.html"/>
    <updated>2017-08-26T00:00:00+08:00</updated>
    <id>http://0.0.0.0:4000/2017/08/26/2017 HITCON CMT mini wargame</id>
    <content type="html">&lt;p&gt;今年 HITCON 在 HITCON CMT 研討會期間又舉辦了與前幾年類似的 wargame，相較於 HITCON CTF 是比較簡單的小型競賽。很幸運跟以色列的朋友一起組隊，因為我很 Lazy 而他們是 Hacker，所以隊名就取 &lt;code class=&quot;highlighter-rouge&quot;&gt;Lazyhacker&lt;/code&gt;。在團隊中我負責解 Reverse 的題型，這次 Reverse 只有兩題，都是 Windows 題，分別是小算盤跟踩地雷，還蠻有趣的，所以想紀錄一下。&lt;/p&gt;
