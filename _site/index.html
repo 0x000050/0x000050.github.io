@@ -120,6 +120,104 @@
   	
   <div class="post">
     <h1 class="post-title">
+      <a href="/2018/06/30/2017-Flare-On-12-missing.html">
+        2017 Flare-On Challenge 12 missing
+      </a>
+    </h1>
+
+      
+     
+    <a href="#flare-on" class="post-tag">
+        Flare-On 
+    </a>
+      
+    <a href="#reverse" class="post-tag">
+        Reverse 
+    </a>
+      
+    <a href="#packet" class="post-tag">
+        Packet 
+    </a>
+      
+    <a href="#malware-protocol" class="post-tag">
+        Malware-Protocol 
+    </a>
+      
+    
+    <br/><br/>
+
+    <span class="post-date">30 Jun 2018</span>
+    <p>目錄:</p>
+<ul>
+  <li>第零階段: 初步分析
+    <ul>
+      <li>coolprogram.exe</li>
+      <li>20170801_1300_filtered.pacp</li>
+    </ul>
+  </li>
+  <li>第一階段: 透過封包解密還原 Client (用於與 c2 溝通)
+    <ul>
+      <li>封包解密</li>
+    </ul>
+  </li>
+  <li>第二階段: 分析 C2 Client (secondstage.exe)
+    <ul>
+      <li>初始化函數</li>
+      <li>解密設定檔 (Malware config)</li>
+      <li>透過 Socket 溝通</li>
+    </ul>
+  </li>
+  <li>第三階段: 解析封包結構
+    <ul>
+      <li>Decrypt Header (size: 0x24)</li>
+      <li>Compress Header (size: 0x1c)</li>
+      <li>Processor Header (size: 0x24)</li>
+    </ul>
+  </li>
+  <li>第四階段: 利用預設指令集下載/安裝 Plugins (Processor default)
+    <ul>
+      <li>指令集</li>
+      <li>受害電腦的資訊</li>
+      <li>Plugins 資訊</li>
+      <li>還原 Plugins</li>
+    </ul>
+  </li>
+  <li>第五階段: 分析 Plugins 解密封包與還原 C2 Server
+    <ul>
+      <li>Decrypt ID (CRPT)</li>
+      <li>Compress ID (COMP)</li>
+      <li>Processor ID (CMD)</li>
+      <li>C2 Server (srv2.exe)、pse.exe 與 cf.exe 以及 Client 封包資訊整理</li>
+    </ul>
+  </li>
+  <li>第六階段: 解密 C2 Server 的封包
+    <ul>
+      <li>Decrypt ID (CRPT)</li>
+      <li>Compress ID (COMP)</li>
+      <li>Server 的資訊</li>
+      <li>Server 封包資訊整理</li>
+    </ul>
+  </li>
+  <li>第七階段: 還原 lab10.zip.cry</li>
+  <li>解密封包的 PacketDecode.py</li>
+  <li>完整封包解密: 還原 C2 server 與 client 的溝通過程
+    <ul>
+      <li>Client 封包解密</li>
+      <li>Server 封包解密</li>
+    </ul>
+  </li>
+</ul>
+
+
+
+    <a href="/2018/06/30/2017-Flare-On-12-missing.html">
+        Read More ...
+    </a>
+
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
       <a href="/2018/05/24/2017-Flare-On-5-pewpewboat.html">
         2017 Flare-On Challenge 5 pewpewboat.exe
       </a>
