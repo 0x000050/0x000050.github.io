@@ -4,7 +4,7 @@
  <title>Lynn's Blog</title>
  <link href="http://0.0.0.0:4000/atom.xml" rel="self"/>
  <link href="http://0.0.0.0:4000/"/>
- <updated>2018-08-20T23:12:45+08:00</updated>
+ <updated>2018-08-22T08:13:54+08:00</updated>
  <id>http://0.0.0.0:4000</id>
  <author>
    <name>Lynn Wu</name>
@@ -13,11 +13,15 @@
 
  
  <entry>
-   <title>2017 Flare-On Challenge 12 missing</title>
+   <title>2017 Flare-On Challenge 12 missing (APT Attack Analysis)</title>
    <link href="http://0.0.0.0:4000/2018/06/30/2017-Flare-On-12-missing.html"/>
    <updated>2018-06-30T00:00:00+08:00</updated>
    <id>http://0.0.0.0:4000/2018/06/30/2017 Flare-On #12 missing</id>
-   <content type="html">&lt;p&gt;目錄:&lt;/p&gt;
+   <content type="html">&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;missing&lt;/code&gt; 的情境式是 APT attack 事件，需要透過封包解密以及逆向 Binary，來還原整個攻擊過程，取得 flag。其中包含還原 Malware Protocol，Malware Config，C2 Server 與 Client，受害者資訊，Plugins (加密/壓縮/指令功能)，BMP 圖檔等，最後會在附錄附上解密的程式碼與解密後的封包內容。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;目錄:&lt;/p&gt;
 &lt;ul&gt;
   &lt;li&gt;第零階段: 初步分析
     &lt;ul&gt;
@@ -25,14 +29,15 @@
       &lt;li&gt;20170801_1300_filtered.pacp&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
-  &lt;li&gt;第一階段: 透過封包解密還原 Client (用於與 c2 溝通)
+  &lt;li&gt;第一階段: 透過封包解密還原 Client (用於與 C2 溝通)
     &lt;ul&gt;
       &lt;li&gt;封包解密&lt;/li&gt;
+      &lt;li&gt;Process Hollowing&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
   &lt;li&gt;第二階段: 分析 C2 Client (secondstage.exe)
     &lt;ul&gt;
-      &lt;li&gt;初始化函數&lt;/li&gt;
+      &lt;li&gt;初始化函數 (Windows Shellcode 技巧)&lt;/li&gt;
       &lt;li&gt;解密設定檔 (Malware config)&lt;/li&gt;
       &lt;li&gt;透過 Socket 溝通&lt;/li&gt;
     &lt;/ul&gt;
@@ -68,9 +73,14 @@
       &lt;li&gt;Server 封包資訊整理&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
-  &lt;li&gt;第七階段: 還原 lab10.zip.cry&lt;/li&gt;
-  &lt;li&gt;解密封包的 PacketDecode.py&lt;/li&gt;
-  &lt;li&gt;完整封包解密: 還原 C2 server 與 client 的溝通過程
+  &lt;li&gt;第七階段: 還原 lab10.zip.cry
+    &lt;ul&gt;
+      &lt;li&gt;分析加密程式 cf.exe&lt;/li&gt;
+      &lt;li&gt;取得 flag&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;附錄一: 解密封包的 PacketDecode.py&lt;/li&gt;
+  &lt;li&gt;附錄二: 完整封包解密: 還原 C2 Server 與 Client 的溝通過程
     &lt;ul&gt;
       &lt;li&gt;Client 封包解密&lt;/li&gt;
       &lt;li&gt;Server 封包解密&lt;/li&gt;
@@ -109,15 +119,51 @@
 &lt;p&gt;此階段的目的是利用 &lt;code class=&quot;highlighter-rouge&quot;&gt;coolprogram.exe&lt;/code&gt; 來解密封包，還原封包中加密的檔案，該檔案推測是 Client，用於與 C2 溝通。&lt;/p&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;Analysis files
-  |File Format|Name|Context|
-  |-|-|-|
-  |Pcap| 20170801_1300_filtered.pacp | 192.168.221.91:49815 &amp;lt;-&amp;gt; 52.0.104.200:80|
-  |PE| coolprogram.exe| downloader|&lt;/li&gt;
-  &lt;li&gt;Dump file
-  |File Format|Name|Context|
-  |-|-|-|
-  |PE| secondstage.exe| C2 Client|&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Analysis files&lt;/p&gt;
+
+    &lt;table&gt;
+      &lt;thead&gt;
+        &lt;tr&gt;
+          &lt;th&gt;File Format&lt;/th&gt;
+          &lt;th&gt;Name&lt;/th&gt;
+          &lt;th&gt;Context&lt;/th&gt;
+        &lt;/tr&gt;
+      &lt;/thead&gt;
+      &lt;tbody&gt;
+        &lt;tr&gt;
+          &lt;td&gt;Pcap&lt;/td&gt;
+          &lt;td&gt;20170801_1300_filtered.pacp&lt;/td&gt;
+          &lt;td&gt;192.168.221.91:49815 &amp;lt;-&amp;gt; 52.0.104.200:80&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+          &lt;td&gt;PE&lt;/td&gt;
+          &lt;td&gt;coolprogram.exe&lt;/td&gt;
+          &lt;td&gt;downloader&lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Dump file&lt;/p&gt;
+
+    &lt;table&gt;
+      &lt;thead&gt;
+        &lt;tr&gt;
+          &lt;th&gt;File Format&lt;/th&gt;
+          &lt;th&gt;Name&lt;/th&gt;
+          &lt;th&gt;Context&lt;/th&gt;
+        &lt;/tr&gt;
+      &lt;/thead&gt;
+      &lt;tbody&gt;
+        &lt;tr&gt;
+          &lt;td&gt;PE&lt;/td&gt;
+          &lt;td&gt;secondstage.exe&lt;/td&gt;
+          &lt;td&gt;C2 Client&lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+  &lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h3 id=&quot;封包解密&quot;&gt;封包解密&lt;/h3&gt;
@@ -160,7 +206,7 @@ Python&amp;gt;open(&quot;secondstage.exe&quot;, &quot;wb&quot;).write(file)
 &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;secondstage.exe&lt;/code&gt; 是一個後門程式，具有 Socket 的功能，用於與 C2 溝通。此外其惡意行為是透過下載模組 (Plugin) 並載入模組，來執行這些惡意功能。從 &lt;code class=&quot;highlighter-rouge&quot;&gt;Main&lt;/code&gt; 函數中會看到先初始化函數，接著解密設定檔，最後是透過 Socket 溝通。&lt;/p&gt;
 
 &lt;h3 id=&quot;初始化函數&quot;&gt;初始化函數&lt;/h3&gt;
-&lt;p&gt;首先，值得注意是程式中用到了 Windows shellcode 中常見的技巧，利用預先計算的函數名稱 hash 來取得所需要的 Windows API 位置，可以隱藏程式中的明文字串來增加分析難度。我們先找到載入 hash 解回 Windows API 的函數是 &lt;code class=&quot;highlighter-rouge&quot;&gt;sub_405060&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;首先，值得注意是程式中用到了 Windows Shellcode 中常見的技巧，利用預先計算的函數名稱 hash 來取得所需要的 Windows API 位置，可以隱藏程式中的明文字串來增加分析難度。我們先找到載入 hash 解回 Windows API 的函數是 &lt;code class=&quot;highlighter-rouge&quot;&gt;sub_405060&lt;/code&gt;&lt;/p&gt;
 
 &lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &lt;span class=&quot;n&quot;&gt;functions&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;version&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x20170417&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
   &lt;span class=&quot;n&quot;&gt;functions&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;size&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;392&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
@@ -1463,6 +1509,8 @@ m.dll
 
 &lt;p&gt;&lt;img src=&quot;https://i.imgur.com/3imYvqG.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
+&lt;h3 id=&quot;分析加密程式-cfexe&quot;&gt;分析加密程式 &lt;code class=&quot;highlighter-rouge&quot;&gt;cf.exe&lt;/code&gt;&lt;/h3&gt;
+
 &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;cf.exe&lt;/code&gt; 是用 &lt;code class=&quot;highlighter-rouge&quot;&gt;.NET&lt;/code&gt; 寫的，可以用 &lt;code class=&quot;highlighter-rouge&quot;&gt;dnSpy&lt;/code&gt; 來看。&lt;code class=&quot;highlighter-rouge&quot;&gt;cf.exe&lt;/code&gt; 使用 AES 加密演算法對資料進行加密，並將資料的 sha256、路徑、文件大小、加密使用的 iv 保存在 Header，並在開頭增加 &lt;code class=&quot;highlighter-rouge&quot;&gt;cryp&lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;https://i.imgur.com/QE82WUZ.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
@@ -1471,9 +1519,12 @@ m.dll
 
 &lt;p&gt;&lt;img src=&quot;https://i.imgur.com/QMwWW3X.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
+&lt;h3 id=&quot;取得-flag&quot;&gt;取得 flag&lt;/h3&gt;
 &lt;p&gt;The answer is: &lt;code class=&quot;highlighter-rouge&quot;&gt;n3v3r_gunna_l3t_you_down_1987_4_ever@flare-on.com&lt;/code&gt;&lt;/p&gt;
 
-&lt;h2 id=&quot;解密封包的-packetdecodepy&quot;&gt;解密封包的 &lt;code class=&quot;highlighter-rouge&quot;&gt;PacketDecode.py&lt;/code&gt;&lt;/h2&gt;
+&lt;hr /&gt;
+
+&lt;h2 id=&quot;附錄一-解密封包的-packetdecodepy&quot;&gt;附錄一: 解密封包的 &lt;code class=&quot;highlighter-rouge&quot;&gt;PacketDecode.py&lt;/code&gt;&lt;/h2&gt;
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;sys&lt;/span&gt;
 &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;os&lt;/span&gt;
 &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;struct&lt;/span&gt;
@@ -2091,7 +2142,9 @@ m.dll
 &lt;span class=&quot;n&quot;&gt;decode_stage3_server&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;h2 id=&quot;完整封包解密-還原-c2-server-與-client-的溝通過程&quot;&gt;完整封包解密: 還原 C2 server 與 client 的溝通過程&lt;/h2&gt;
+&lt;hr /&gt;
+
+&lt;h2 id=&quot;附錄二-完整封包解密-還原-c2-server-與-client-的溝通過程&quot;&gt;附錄二: 完整封包解密: 還原 C2 Server 與 Client 的溝通過程&lt;/h2&gt;
 
 &lt;h3 id=&quot;client-封包解密&quot;&gt;Client 封包解密&lt;/h3&gt;
 
