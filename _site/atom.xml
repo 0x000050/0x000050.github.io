@@ -4,7 +4,7 @@
  <title>Lynn's Blog</title>
  <link href="http://0.0.0.0:4000/atom.xml" rel="self"/>
  <link href="http://0.0.0.0:4000/"/>
- <updated>2018-08-22T08:13:54+08:00</updated>
+ <updated>2018-08-24T16:45:32+08:00</updated>
  <id>http://0.0.0.0:4000</id>
  <author>
    <name>Lynn Wu</name>
@@ -42,19 +42,19 @@
       &lt;li&gt;透過 Socket 溝通&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
-  &lt;li&gt;第三階段: 解析封包結構
-    &lt;ul&gt;
-      &lt;li&gt;Decrypt Header (size: 0x24)&lt;/li&gt;
-      &lt;li&gt;Compress Header (size: 0x1c)&lt;/li&gt;
-      &lt;li&gt;Processor Header (size: 0x24)&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;第四階段: 利用預設指令集下載/安裝 Plugins (Processor default)
+  &lt;li&gt;第三階段: 利用預設指令集下載/安裝 Plugins (Processor default)
     &lt;ul&gt;
       &lt;li&gt;指令集&lt;/li&gt;
       &lt;li&gt;受害電腦的資訊&lt;/li&gt;
       &lt;li&gt;Plugins 資訊&lt;/li&gt;
       &lt;li&gt;還原 Plugins&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;第四階段: 解析封包結構
+    &lt;ul&gt;
+      &lt;li&gt;Decrypt Header (size: 0x24)&lt;/li&gt;
+      &lt;li&gt;Compress Header (size: 0x1c)&lt;/li&gt;
+      &lt;li&gt;Processor Header (size: 0x24)&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
   &lt;li&gt;第五階段: 分析 Plugins 解密封包與還原 C2 Server
@@ -186,7 +186,7 @@
                2 個目錄  20,530,176,000 位元組可用
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;值得一題的是 &lt;code class=&quot;highlighter-rouge&quot;&gt;coolprogram.exe&lt;/code&gt; 的 &lt;code class=&quot;highlighter-rouge&quot;&gt;sub_410DE8&lt;/code&gt; 函數是 “Process Hollowing”。Process Hollowing 是一種惡意程式傀儡的技術。其原理是透過 &lt;code class=&quot;highlighter-rouge&quot;&gt;CreateProcess&lt;/code&gt; 建立一個正常的 process 當作目標程式，且 &lt;code class=&quot;highlighter-rouge&quot;&gt;CreationFlag&lt;/code&gt; 設為 &lt;code class=&quot;highlighter-rouge&quot;&gt;CREATE_SUSPENDED&lt;/code&gt;，在 &lt;code class=&quot;highlighter-rouge&quot;&gt;coolprogram.exe&lt;/code&gt; 之中的目標程式是”預設瀏覽器”。Process Hollowing 關鍵是用 &lt;code class=&quot;highlighter-rouge&quot;&gt;NtUnmapViewOfSection&lt;/code&gt; 來 unmap 預設瀏覽器的 sections 在把惡意程式 mapping 進記憶體中，再透過 &lt;code class=&quot;highlighter-rouge&quot;&gt;SetContextThread&lt;/code&gt; 設定 Entry Point，最後利用 &lt;code class=&quot;highlighter-rouge&quot;&gt;ResumeThread&lt;/code&gt; 來恢復瀏覽器運作，執行惡意行為。&lt;/p&gt;
+&lt;p&gt;值得一提的是 &lt;code class=&quot;highlighter-rouge&quot;&gt;coolprogram.exe&lt;/code&gt; 的 &lt;code class=&quot;highlighter-rouge&quot;&gt;sub_410DE8&lt;/code&gt; 函數是 “Process Hollowing”。Process Hollowing 是一種惡意程式傀儡的技術。其原理是透過 &lt;code class=&quot;highlighter-rouge&quot;&gt;CreateProcess&lt;/code&gt; 建立一個正常的 process 當作目標程式，且 &lt;code class=&quot;highlighter-rouge&quot;&gt;CreationFlag&lt;/code&gt; 設為 &lt;code class=&quot;highlighter-rouge&quot;&gt;CREATE_SUSPENDED&lt;/code&gt;，在 &lt;code class=&quot;highlighter-rouge&quot;&gt;coolprogram.exe&lt;/code&gt; 之中的目標程式是”預設瀏覽器”。Process Hollowing 關鍵是用 &lt;code class=&quot;highlighter-rouge&quot;&gt;NtUnmapViewOfSection&lt;/code&gt; 來 unmap 預設瀏覽器的 sections 再把惡意程式 mapping 進記憶體中，再透過 &lt;code class=&quot;highlighter-rouge&quot;&gt;SetContextThread&lt;/code&gt; 設定 Entry Point，最後利用 &lt;code class=&quot;highlighter-rouge&quot;&gt;ResumeThread&lt;/code&gt; 來恢復瀏覽器運作，執行惡意行為。&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;https://i.imgur.com/cT1yGfh.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
@@ -499,187 +499,7 @@ Python&amp;gt;open(&quot;secondstage.exe&quot;, &quot;wb&quot;).write(file)
 &lt;span class=&quot;c&quot;&gt;#        conn.send(&quot;32303137aff18141240000005e0000005e00000051298f741667d7ed2941950106f505451c0000004200000042000000f37126ad88a5617eaf06000d424c5a21170417200e000000000000000000000000000000155bbf4a1efe1517734604b9d42b80e8770065006c0063006f006d00650070006100730073003100210031000000&quot;.decode(&quot;hex&quot;))&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;h2 id=&quot;第三階段-解析封包結構&quot;&gt;第三階段: 解析封包結構&lt;/h2&gt;
-&lt;p&gt;透過 Python Socket 與 IDA 動態分析，可以找到 Socket 中接收 &lt;code class=&quot;highlighter-rouge&quot;&gt;Recv&lt;/code&gt; 與 &lt;code class=&quot;highlighter-rouge&quot;&gt;Send&lt;/code&gt; 函數，&lt;code class=&quot;highlighter-rouge&quot;&gt;sub_403210&lt;/code&gt; 用於 &lt;code class=&quot;highlighter-rouge&quot;&gt;RecvandDecode&lt;/code&gt;，&lt;code class=&quot;highlighter-rouge&quot;&gt;sub_403600&lt;/code&gt; 用於 &lt;code class=&quot;highlighter-rouge&quot;&gt;EncodeAndSend&lt;/code&gt;。其封包結構如下&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;Offset&lt;/th&gt;
-      &lt;th&gt;Length&lt;/th&gt;
-      &lt;th&gt;Contents&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;0x00&lt;/td&gt;
-      &lt;td&gt;0x24 bytes&lt;/td&gt;
-      &lt;td&gt;Decrypt Header&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;0x24&lt;/td&gt;
-      &lt;td&gt;0x1c bytes&lt;/td&gt;
-      &lt;td&gt;Compress Header&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;0x40&lt;/td&gt;
-      &lt;td&gt;0x24 bytes&lt;/td&gt;
-      &lt;td&gt;Processor Header&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;0x60&lt;/td&gt;
-      &lt;td&gt;-&lt;/td&gt;
-      &lt;td&gt;Data&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;但初步嘗試封包解密時，只能透過未加密的前幾個封包理解 &lt;code class=&quot;highlighter-rouge&quot;&gt;Decrypt Header&lt;/code&gt; 的結構，對於完整的封包結構還沒有足夠的資訊理解，在後續下載其他的 Plugin 後會獲得更完整的分析資訊。&lt;/p&gt;
-
-&lt;p&gt;此外，在解密封包的過程發現每個 Plugin 會有一個獨特的 ID (16 bytes) 用於識別，C2 Server 與 Client 溝通時，會呼叫某個 ID 來執行該 Plugin 的功能，從封包中我們也可以發現這些 Plugin 的 ID。&lt;/p&gt;
-
-&lt;h3 id=&quot;decrypt-header-size-0x24&quot;&gt;Decrypt Header (size: 0x24)&lt;/h3&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;Offset&lt;/th&gt;
-      &lt;th&gt;Length&lt;/th&gt;
-      &lt;th&gt;Contents&lt;/th&gt;
-      &lt;th&gt;Example&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;0x00&lt;/td&gt;
-      &lt;td&gt;4 bytes&lt;/td&gt;
-      &lt;td&gt;year&lt;/td&gt;
-      &lt;td&gt;32303137&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;0x04&lt;/td&gt;
-      &lt;td&gt;4 bytes&lt;/td&gt;
-      &lt;td&gt;crc32 checksum&lt;/td&gt;
-      &lt;td&gt;3f2a4b2f&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;0x08&lt;/td&gt;
-      &lt;td&gt;4 bytes&lt;/td&gt;
-      &lt;td&gt;Packet header size&lt;/td&gt;
-      &lt;td&gt;24000000&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;0x0C&lt;/td&gt;
-      &lt;td&gt;4 bytes&lt;/td&gt;
-      &lt;td&gt;data EncSize&lt;/td&gt;
-      &lt;td&gt;60000000&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;0x10&lt;/td&gt;
-      &lt;td&gt;4 bytes&lt;/td&gt;
-      &lt;td&gt;data DecSize&lt;/td&gt;
-      &lt;td&gt;60000000&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;0x14&lt;/td&gt;
-      &lt;td&gt;16 bytes&lt;/td&gt;
-      &lt;td&gt;(GUID) cryptor id&lt;/td&gt;
-      &lt;td&gt;51298f741667d7ed2941950106f50545 -&amp;gt; default&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;h3 id=&quot;compress-header-size-0x1c&quot;&gt;Compress Header (size: 0x1c)&lt;/h3&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;Offset&lt;/th&gt;
-      &lt;th&gt;Length&lt;/th&gt;
-      &lt;th&gt;Contents&lt;/th&gt;
-      &lt;th&gt;Example&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;0x24&lt;/td&gt;
-      &lt;td&gt;4 bytes&lt;/td&gt;
-      &lt;td&gt;Compress header size&lt;/td&gt;
-      &lt;td&gt;1c000000&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;0x28&lt;/td&gt;
-      &lt;td&gt;4 bytes&lt;/td&gt;
-      &lt;td&gt;data EncSize&lt;/td&gt;
-      &lt;td&gt;44000000&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;0x2c&lt;/td&gt;
-      &lt;td&gt;4 bytes&lt;/td&gt;
-      &lt;td&gt;data DecSize&lt;/td&gt;
-      &lt;td&gt;44000000&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;0x3c&lt;/td&gt;
-      &lt;td&gt;16 bytes&lt;/td&gt;
-      &lt;td&gt;(GUID) compressor id&lt;/td&gt;
-      &lt;td&gt;f37126ad88a5617eaf06000d424c5a21 -&amp;gt; default&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;h3 id=&quot;processor-header-size-0x24&quot;&gt;Processor Header (size: 0x24)&lt;/h3&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;Offset&lt;/th&gt;
-      &lt;th&gt;Length&lt;/th&gt;
-      &lt;th&gt;Contents&lt;/th&gt;
-      &lt;th&gt;Example&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;0x40&lt;/td&gt;
-      &lt;td&gt;4 bytes&lt;/td&gt;
-      &lt;td&gt;version&lt;/td&gt;
-      &lt;td&gt;17041720&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;0x44&lt;/td&gt;
-      &lt;td&gt;4 bytes&lt;/td&gt;
-      &lt;td&gt;cmd&lt;/td&gt;
-      &lt;td&gt;07000000&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;0x48&lt;/td&gt;
-      &lt;td&gt;4 bytes&lt;/td&gt;
-      &lt;td&gt;msgId&lt;/td&gt;
-      &lt;td&gt;08000000&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;0x4c&lt;/td&gt;
-      &lt;td&gt;4 bytes&lt;/td&gt;
-      &lt;td&gt;status&lt;/td&gt;
-      &lt;td&gt;00000000&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;0x50&lt;/td&gt;
-      &lt;td&gt;4 bytes&lt;/td&gt;
-      &lt;td&gt;status&lt;/td&gt;
-      &lt;td&gt;00000000&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;0x54&lt;/td&gt;
-      &lt;td&gt;16 bytes&lt;/td&gt;
-      &lt;td&gt;(GUID) processor id&lt;/td&gt;
-      &lt;td&gt;155bbf4a1efe1517734604b9d42b80e8 -&amp;gt; default&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;h2 id=&quot;第四階段-利用預設指令集下載安裝-plugins--processor-default&quot;&gt;第四階段: 利用預設指令集下載/安裝 Plugins  (Processor default)&lt;/h2&gt;
+&lt;h2 id=&quot;第三階段-利用預設指令集下載安裝-plugins--processor-default&quot;&gt;第三階段: 利用預設指令集下載/安裝 Plugins  (Processor default)&lt;/h2&gt;
 &lt;blockquote&gt;
   &lt;p&gt;processor ID = 155bbf4a1efe1517734604b9d42b80e8&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -1097,6 +917,186 @@ f.dll
 s.dll 
 m.dll
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;第四階段-解析封包結構&quot;&gt;第四階段: 解析封包結構&lt;/h2&gt;
+&lt;p&gt;透過 Python Socket 與 IDA 動態分析，可以找到 Socket 中接收 &lt;code class=&quot;highlighter-rouge&quot;&gt;Recv&lt;/code&gt; 與 &lt;code class=&quot;highlighter-rouge&quot;&gt;Send&lt;/code&gt; 函數，&lt;code class=&quot;highlighter-rouge&quot;&gt;sub_403210&lt;/code&gt; 用於 &lt;code class=&quot;highlighter-rouge&quot;&gt;Recv&lt;/code&gt; 與 &lt;code class=&quot;highlighter-rouge&quot;&gt;Decode&lt;/code&gt;，&lt;code class=&quot;highlighter-rouge&quot;&gt;sub_403600&lt;/code&gt; 用於 &lt;code class=&quot;highlighter-rouge&quot;&gt;Send&lt;/code&gt; 與 &lt;code class=&quot;highlighter-rouge&quot;&gt;Encode&lt;/code&gt;。其封包結構如下&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Offset&lt;/th&gt;
+      &lt;th&gt;Length&lt;/th&gt;
+      &lt;th&gt;Contents&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;0x00&lt;/td&gt;
+      &lt;td&gt;0x24 bytes&lt;/td&gt;
+      &lt;td&gt;Decrypt Header&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;0x24&lt;/td&gt;
+      &lt;td&gt;0x1c bytes&lt;/td&gt;
+      &lt;td&gt;Compress Header&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;0x40&lt;/td&gt;
+      &lt;td&gt;0x24 bytes&lt;/td&gt;
+      &lt;td&gt;Processor Header&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;0x60&lt;/td&gt;
+      &lt;td&gt;-&lt;/td&gt;
+      &lt;td&gt;Data&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;但初步嘗試封包解密時，只能透過未加密的前幾個封包理解 &lt;code class=&quot;highlighter-rouge&quot;&gt;Decrypt Header&lt;/code&gt; 的結構，對於完整的封包結構還沒有足夠的資訊理解，在後續下載其他的 Plugin 後會獲得更完整的分析資訊。&lt;/p&gt;
+
+&lt;p&gt;此外，在解密封包的過程發現每個 Plugin 會有一個獨特的 ID (16 bytes) 用於識別，C2 Server 與 Client 溝通時，會呼叫某個 ID 來執行該 Plugin 的功能，從封包中我們也可以發現這些 Plugin 的 ID。&lt;/p&gt;
+
+&lt;h3 id=&quot;decrypt-header-size-0x24&quot;&gt;Decrypt Header (size: 0x24)&lt;/h3&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Offset&lt;/th&gt;
+      &lt;th&gt;Length&lt;/th&gt;
+      &lt;th&gt;Contents&lt;/th&gt;
+      &lt;th&gt;Example&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;0x00&lt;/td&gt;
+      &lt;td&gt;4 bytes&lt;/td&gt;
+      &lt;td&gt;year&lt;/td&gt;
+      &lt;td&gt;32303137&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;0x04&lt;/td&gt;
+      &lt;td&gt;4 bytes&lt;/td&gt;
+      &lt;td&gt;crc32 checksum&lt;/td&gt;
+      &lt;td&gt;3f2a4b2f&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;0x08&lt;/td&gt;
+      &lt;td&gt;4 bytes&lt;/td&gt;
+      &lt;td&gt;Packet header size&lt;/td&gt;
+      &lt;td&gt;24000000&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;0x0C&lt;/td&gt;
+      &lt;td&gt;4 bytes&lt;/td&gt;
+      &lt;td&gt;data EncSize&lt;/td&gt;
+      &lt;td&gt;60000000&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;0x10&lt;/td&gt;
+      &lt;td&gt;4 bytes&lt;/td&gt;
+      &lt;td&gt;data DecSize&lt;/td&gt;
+      &lt;td&gt;60000000&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;0x14&lt;/td&gt;
+      &lt;td&gt;16 bytes&lt;/td&gt;
+      &lt;td&gt;(GUID) cryptor id&lt;/td&gt;
+      &lt;td&gt;51298f741667d7ed2941950106f50545 -&amp;gt; default&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h3 id=&quot;compress-header-size-0x1c&quot;&gt;Compress Header (size: 0x1c)&lt;/h3&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Offset&lt;/th&gt;
+      &lt;th&gt;Length&lt;/th&gt;
+      &lt;th&gt;Contents&lt;/th&gt;
+      &lt;th&gt;Example&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;0x24&lt;/td&gt;
+      &lt;td&gt;4 bytes&lt;/td&gt;
+      &lt;td&gt;Compress header size&lt;/td&gt;
+      &lt;td&gt;1c000000&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;0x28&lt;/td&gt;
+      &lt;td&gt;4 bytes&lt;/td&gt;
+      &lt;td&gt;data EncSize&lt;/td&gt;
+      &lt;td&gt;44000000&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;0x2c&lt;/td&gt;
+      &lt;td&gt;4 bytes&lt;/td&gt;
+      &lt;td&gt;data DecSize&lt;/td&gt;
+      &lt;td&gt;44000000&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;0x3c&lt;/td&gt;
+      &lt;td&gt;16 bytes&lt;/td&gt;
+      &lt;td&gt;(GUID) compressor id&lt;/td&gt;
+      &lt;td&gt;f37126ad88a5617eaf06000d424c5a21 -&amp;gt; default&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h3 id=&quot;processor-header-size-0x24&quot;&gt;Processor Header (size: 0x24)&lt;/h3&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Offset&lt;/th&gt;
+      &lt;th&gt;Length&lt;/th&gt;
+      &lt;th&gt;Contents&lt;/th&gt;
+      &lt;th&gt;Example&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;0x40&lt;/td&gt;
+      &lt;td&gt;4 bytes&lt;/td&gt;
+      &lt;td&gt;version&lt;/td&gt;
+      &lt;td&gt;17041720&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;0x44&lt;/td&gt;
+      &lt;td&gt;4 bytes&lt;/td&gt;
+      &lt;td&gt;cmd&lt;/td&gt;
+      &lt;td&gt;07000000&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;0x48&lt;/td&gt;
+      &lt;td&gt;4 bytes&lt;/td&gt;
+      &lt;td&gt;msgId&lt;/td&gt;
+      &lt;td&gt;08000000&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;0x4c&lt;/td&gt;
+      &lt;td&gt;4 bytes&lt;/td&gt;
+      &lt;td&gt;status&lt;/td&gt;
+      &lt;td&gt;00000000&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;0x50&lt;/td&gt;
+      &lt;td&gt;4 bytes&lt;/td&gt;
+      &lt;td&gt;status&lt;/td&gt;
+      &lt;td&gt;00000000&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;0x54&lt;/td&gt;
+      &lt;td&gt;16 bytes&lt;/td&gt;
+      &lt;td&gt;(GUID) processor id&lt;/td&gt;
+      &lt;td&gt;155bbf4a1efe1517734604b9d42b80e8 -&amp;gt; default&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
 
 &lt;h2 id=&quot;第五階段-分析-plugins-解密封包與還原-c2-server&quot;&gt;第五階段: 分析 Plugins 解密封包與還原 C2 Server&lt;/h2&gt;
 &lt;p&gt;為了加速分析速度，可以 diff 看一下這些 dll 那些函數不同，不同的函數可能是該 dll 的重要功能，透過 diff 可以節省許多的時間而專注在那些重要的功能。&lt;/p&gt;
