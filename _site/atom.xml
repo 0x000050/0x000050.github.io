@@ -4,13 +4,146 @@
  <title>Lynn's Blog</title>
  <link href="http://0.0.0.0:4000/atom.xml" rel="self"/>
  <link href="http://0.0.0.0:4000/"/>
- <updated>2018-08-24T16:45:32+08:00</updated>
+ <updated>2018-10-20T00:41:29+08:00</updated>
  <id>http://0.0.0.0:4000</id>
  <author>
    <name>Lynn Wu</name>
    <email>0x000050@gmail.com</email>
  </author>
 
+ 
+ <entry>
+   <title>Setting up windows kernel-mode debugging with WinDbg and VMware</title>
+   <link href="http://0.0.0.0:4000/2018/10/20/Setting-up-windows-kernel-mode-debugging-with-WinDbg-and-VMware.html"/>
+   <updated>2018-10-20T00:00:00+08:00</updated>
+   <id>http://0.0.0.0:4000/2018/10/20/Setting up windows kernel-mode debugging with WinDbg and VMware</id>
+   <content type="html">&lt;p&gt;Since I heve recently managed to learn about Windows Kernel Exploit and reverse Windows Driver, I decided to take notes and write down my experience. The article talks about configuring for VMware and WinDbg, setting Windows Boot, WinDbg Command, and WinDbg theme(todo). If you are alos trying to debug Windows Kernel-mode via &lt;a href=&quot;https://docs.microsoft.com/en-us/windows-hardware/drivers/debugger/debugger-download-tools&quot;&gt;The Windows Debugger (WinDbg)&lt;/a&gt;, this may be helpful to you.&lt;/p&gt;
+
+&lt;p&gt;WinDbg can be used to debug kernel and user mode code, analyze crash dumps and to examine the CPU registers as code executes. But I just using Windbg to debug Kernel-mode code and analyze crash dumps. If I need to debug User-mode code, I will choose &lt;a href=&quot;https://www.hex-rays.com/products/ida/&quot;&gt;IDA Pro&lt;/a&gt; or &lt;a href=&quot;http://www.ollydbg.de/&quot;&gt;ollydbg&lt;/a&gt;/&lt;a href=&quot;https://x64dbg.com/#start&quot;&gt;x64dbg&lt;/a&gt; to debug it.&lt;/p&gt;
+
+&lt;h2 id=&quot;prerequisites&quot;&gt;Prerequisites&lt;/h2&gt;
+&lt;h3 id=&quot;install-windows-os-in-the-vmware&quot;&gt;Install Windows OS in the VMware.&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;[Method 1] To create a virtual machine from an ISO image. (I’ll be using &lt;a href=&quot;https://my.vmware.com/web/vmware/info/slug/desktop_end_user_computing/vmware_workstation_pro/15_0&quot;&gt;VMware Workstation&lt;/a&gt;)&lt;/li&gt;
+  &lt;li&gt;[Method 2] Free download is also available from &lt;a href=&quot;https://developer.microsoft.com/en-us/microsoft-edge/tools/vms/&quot;&gt;Microsoft VM download page&lt;/a&gt;
+    &lt;h3 id=&quot;install-windbg-in-host-system&quot;&gt;Install &lt;a href=&quot;https://docs.microsoft.com/en-us/windows-hardware/drivers/debugger/debugger-download-tools&quot;&gt;WinDbg&lt;/a&gt; in host system&lt;/h3&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;configuring-for-vmware&quot;&gt;Configuring for VMware&lt;/h2&gt;
+&lt;p&gt;We need to communication between Guest system and Host system, so we can using &lt;a href=&quot;https://docs.microsoft.com/en-us/windows/desktop/ipc/named-pipes&quot;&gt;name piped&lt;/a&gt; to simulate serial port (COM Port). We can add a named pipe serial port for connecting a virtual machine to an application or to another virtual machine that is running on the host system.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Powered off the virtual machine.&lt;/li&gt;
+  &lt;li&gt;For the Debugger VM, &lt;code class=&quot;highlighter-rouge&quot;&gt;Right Click&lt;/code&gt; and selected &lt;code class=&quot;highlighter-rouge&quot;&gt;Settings&lt;/code&gt; button.&lt;/li&gt;
+  &lt;li&gt;Clicked &lt;code class=&quot;highlighter-rouge&quot;&gt;Add&lt;/code&gt; button in the “VMware Machine Settings” dialog box. and selected &lt;code class=&quot;highlighter-rouge&quot;&gt;Serial Port&lt;/code&gt; and click &lt;code class=&quot;highlighter-rouge&quot;&gt;Next&lt;/code&gt; in the “Add Hardware Wizard” dialog box.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://i.imgur.com/87ulCRB.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;On next page, select &lt;code class=&quot;highlighter-rouge&quot;&gt;Output to named pipe&lt;/code&gt; and click &lt;code class=&quot;highlighter-rouge&quot;&gt;Next&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://i.imgur.com/QiRUCi5.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Set a neme for &lt;code class=&quot;highlighter-rouge&quot;&gt;Name pipe&lt;/code&gt;, and note it, we will using it for WinDbg. For example: &lt;code class=&quot;highlighter-rouge&quot;&gt;\\.\pipe\win7_x64&lt;/code&gt;. And select &lt;code class=&quot;highlighter-rouge&quot;&gt;This end is the server&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;The other end is an application&lt;/code&gt;. Check &lt;code class=&quot;highlighter-rouge&quot;&gt;Connect at power on&lt;/code&gt; then click &lt;code class=&quot;highlighter-rouge&quot;&gt;Finish&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://i.imgur.com/e0nJSBJ.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;After clicking Finish, check &lt;code class=&quot;highlighter-rouge&quot;&gt;Yield CPU on poll&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://i.imgur.com/uGeCVmF.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;SpecialNote: Note that new serial port has number &lt;code class=&quot;highlighter-rouge&quot;&gt;2&lt;/code&gt; which corresponds to &lt;code class=&quot;highlighter-rouge&quot;&gt;COM2&lt;/code&gt;. We will use this number when we setting up &lt;code class=&quot;highlighter-rouge&quot;&gt;BCD&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://i.imgur.com/2FmI1lR.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;windows-boot-guest-system&quot;&gt;Windows Boot (Guest System)&lt;/h2&gt;
+&lt;p&gt;In Windows XP, we can modify &lt;code class=&quot;highlighter-rouge&quot;&gt;boot.ini&lt;/code&gt; to change Windows startup options. After Windows 7, boot application settings stored in &lt;code class=&quot;highlighter-rouge&quot;&gt;BCD&lt;/code&gt;, we can using &lt;a href=&quot;https://docs.microsoft.com/en-us/windows-hardware/manufacture/desktop/bcdedit-command-line-options&quot;&gt;BCDedit&lt;/a&gt; to modify &lt;code class=&quot;highlighter-rouge&quot;&gt;BCD&lt;/code&gt; file.&lt;/p&gt;
+
+&lt;h3 id=&quot;windows-xp---bootini&quot;&gt;Windows XP - &lt;code class=&quot;highlighter-rouge&quot;&gt;boot.ini&lt;/code&gt;&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;boot.ini&lt;/code&gt; control how the operating system is booted and any startup options
+    &lt;h3 id=&quot;windows-7--windows-10---boot-configuration-data-bcd&quot;&gt;Windows 7 / Windows 10 - &lt;code class=&quot;highlighter-rouge&quot;&gt;Boot Configuration Data (BCD)&lt;/code&gt;&lt;/h3&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Run &lt;code class=&quot;highlighter-rouge&quot;&gt;cmd&lt;/code&gt; as “administrator”, and execute the following commands:&lt;/li&gt;
+  &lt;li&gt;Use Serial Port (COM Port) as the communication between debugger and debuggee. The number of debugport should be base on VMware’s Serial Port setting, we just We got Serial Port number is &lt;code class=&quot;highlighter-rouge&quot;&gt;2&lt;/code&gt;.
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;bcdedit /dbgsettings serial debugport:2    
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Enables or disables the kernel debugger for a specified boot entry. You can use the following syntax to enable kernel or boot debug.
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;bcdedit /debug ON
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Restart Guest System&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;SpecialNote: we just modify original boot option, instead of adding a boot option. We can save some time when booting.&lt;/p&gt;
+
+&lt;h2 id=&quot;windbg&quot;&gt;WinDbg&lt;/h2&gt;
+&lt;p&gt;If everythings goes well, We can Start the Debugging Session Using WinDbg at the command line on the Host System, using &lt;code class=&quot;highlighter-rouge&quot;&gt;cmd.exe&lt;/code&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;windbg -b -k com:pipe,port=\\.\pipe\win7_x64,resets=0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;About that &lt;code class=&quot;highlighter-rouge&quot;&gt;port&lt;/code&gt;, if the debugger is running on the same computer as the virtual machine, enter the following for Port. The &lt;code class=&quot;highlighter-rouge&quot;&gt;PipeName&lt;/code&gt; from Serial Port, we just setting. If we forget it, we can find it at VMware (&lt;code class=&quot;highlighter-rouge&quot;&gt;VM &amp;gt; Settings... &amp;gt; Serial Port2 &amp;gt; Use named pipe&lt;/code&gt;)&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;\\.\pipe\PipeName.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;For more details, reference &lt;a href=&quot;https://docs.microsoft.com/en-us/windows-hardware/drivers/debugger/attaching-to-a-virtual-machine--kernel-mode-&quot;&gt;Microsoft page&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;load-symbols-in-windbg&quot;&gt;Load Symbols in WinDbg&lt;/h3&gt;
+&lt;p&gt;You can load symbols and saving the symbol path as part of a workspace.&lt;/p&gt;
+
+&lt;h4 id=&quot;method-1-load-symbols-by-windbg-menu&quot;&gt;[Method 1] Load symbols by WinDbg menu&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;File&lt;/code&gt; &amp;gt; &lt;code class=&quot;highlighter-rouge&quot;&gt;Symbol File Path...&lt;/code&gt; (or pressing &lt;code class=&quot;highlighter-rouge&quot;&gt;Ctrl&lt;/code&gt;+&lt;code class=&quot;highlighter-rouge&quot;&gt;S&lt;/code&gt;)&lt;/li&gt;
+  &lt;li&gt;Input symbol path, and check &lt;code class=&quot;highlighter-rouge&quot;&gt;reload&lt;/code&gt;. We Usually download Microsoft symbols, if you have  Symbols of your application, locally, flat list of PDB files, you also can load its.
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;SRV* c:\Symbols *http://msdl.microsoft.com/download/symbols
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;method-2-load-symbols-by-windbg-command-line&quot;&gt;[Method 2] Load symbols by WinDbg Command line&lt;/h4&gt;
+
+&lt;p&gt;First time, you need to download symbols from Microsoft.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.sympath srv*c:\Symbols*https://msdl.microsoft.com/download/symbols
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;After that, you just need to set local symbol folder, and reload symbol.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.symfix+ c:\symbols
+.reload
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;method-3-load-symbols-by-windows-environment-variable&quot;&gt;[Method 3] Load symbols by Windows environment variable&lt;/h4&gt;
+&lt;p&gt;There is a environment variable called &lt;code class=&quot;highlighter-rouge&quot;&gt;_NT_SYMBOL_PATH&lt;/code&gt; which can be set to a symbol path as well.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;SpecialNote: If we setting the environment variable. Not only impact WinDbg, but also Visual Studio, Process Explorer, Process Monitor and potentially other software.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;method-4-load-symbols-by-windows-commands&quot;&gt;[Method 4] Load Symbols by Windows Commands&lt;/h4&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;WinDbg -y &quot;&amp;lt;symbol path&amp;gt;&lt;/code&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;enable-output-of-dbgprint&quot;&gt;Enable Output of DbgPrint&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;start / run / &lt;code class=&quot;highlighter-rouge&quot;&gt;regedit&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;Add the key &lt;code class=&quot;highlighter-rouge&quot;&gt;Debug Print Filter&lt;/code&gt; in &lt;code class=&quot;highlighter-rouge&quot;&gt;HKLM\SYSTEM\CCS\Control\Session Manager&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;Under this key(&lt;code class=&quot;highlighter-rouge&quot;&gt;HKLM\SYSTEM\CCS\Control\Session Manager\Debug Print Filter&lt;/code&gt;), create a value with the name &lt;code class=&quot;highlighter-rouge&quot;&gt;DEFAULT&lt;/code&gt; Set the value of this key equal to the DWORD value &lt;code class=&quot;highlighter-rouge&quot;&gt;0x0000ffff&lt;/code&gt;
+    &lt;ul&gt;
+      &lt;li&gt;SpecialNote: Don’t set the value named &lt;code class=&quot;highlighter-rouge&quot;&gt;default&lt;/code&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+</content>
+ </entry>
  
  <entry>
    <title>2017 Flare-On Challenge 12 missing (APT Attack Analysis)</title>
